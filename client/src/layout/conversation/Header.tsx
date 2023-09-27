@@ -2,6 +2,7 @@ import { Stack, Box, Avatar, Typography, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { faker } from "@faker-js/faker";
 import { CaretDown } from "phosphor-react";
+
 import { StyledBadge } from "../../components/StyledBadge";
 
 const Header = () => {
@@ -9,11 +10,11 @@ const Header = () => {
   return (
     <Box
       sx={{
-        width: "100%",
+        minWidth: "350px",
         height: "80px",
         borderLeft: `solid ${theme.palette.text.secondary} 0.1px`,
         bgcolor: theme.palette.background.paper,
-        boxShadow: "2px 2px 2px rgba(0,0,0,0.15)",
+        boxShadow: "2px 2px 6px rgba(0,0,0,0.15)",
       }}
     >
       <Stack
@@ -35,7 +36,7 @@ const Header = () => {
             />
           </StyledBadge>
           <Stack>
-            <Typography variant="subtitle2">{faker.name.fullName()}</Typography>
+            <Typography variant="subtitle1">{faker.name.fullName()}</Typography>
             <Typography variant="caption">online</Typography>
           </Stack>
         </Stack>

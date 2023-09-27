@@ -4,10 +4,11 @@ import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import { CaretDown, CheckCircle, Circle } from "phosphor-react";
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { toggleColor } from "../../store/atoms/toggleTheme";
+import ToggleTheme from "./ToggleTheme";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -17,8 +18,8 @@ const StyledMenu = styled((props: MenuProps) => (
       horizontal: "right",
     }}
     transformOrigin={{
-      vertical: "bottom",
-      horizontal: "left",
+      vertical: window.innerWidth > 900 ? "bottom" : "top",
+      horizontal: window.innerWidth > 900 ? "left" : "right",
     }}
     {...props}
   />
@@ -78,11 +79,19 @@ export default function ToggleColor() {
         open={open}
         onClose={handleClose}
       >
+        {window.innerWidth < 900 && (
+          <>
+            <MenuItem disableRipple onClick={handleClose}>
+              <Typography sx={{ mr: 2 }}>Select Theme</Typography>
+              <ToggleTheme />
+            </MenuItem>
+            <Divider sx={{ my: 0.5 }} />
+          </>
+        )}
         <MenuItem disableRipple onClick={handleClose}>
-          Select Color Theme
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem disableRipple onClick={handleClose}>
+          <Typography variant="subtitle1" sx={{ mr: 2 }}>
+            Select Color
+          </Typography>
           <Stack direction={"row"} spacing={4}>
             <IconButton
               sx={{ bgcolor: "#0162C4" }}

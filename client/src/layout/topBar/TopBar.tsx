@@ -1,13 +1,16 @@
 import { Avatar, Box, Divider, IconButton, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { ChatCircleDots, Users } from "phosphor-react";
+import { ChatCircleDots, List, Users } from "phosphor-react";
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
+import { useSetRecoilState } from "recoil";
 
 import darkLogo from "../../assets/logo/dark-logo.png";
 import lightLogo from "../../assets/logo/light-logo.png";
 import ToggleTheme from "../../components/toggleTheme/ToggleTheme";
 import ToggleColor from "../../components/toggleTheme/ToggleColor";
+import { selectSideBar } from "../../store/atoms/selectSideBar";
+import { openDrawer } from "../../store/atoms/drawer";
 
 const TopBar = () => {
   const theme = useTheme();
@@ -29,7 +32,8 @@ const TopBar = () => {
         sx={{ height: "100%", p: 3 }}
       >
         <Stack direction={"row"} spacing={4}>
-          <Logo />
+          <Drawer />
+          {innerWidth > 900 && <Logo />}
           <NavButtons />
         </Stack>
 
@@ -39,6 +43,17 @@ const TopBar = () => {
         />
       </Stack>
     </Box>
+  );
+};
+
+// ........... Drawer Open/Close ........
+const Drawer = () => {
+  const setOpen = useSetRecoilState(openDrawer);
+
+  return (
+    <IconButton onClick={() => setOpen((prevOpen) => !prevOpen)}>
+      <List size={36} />
+    </IconButton>
   );
 };
 
@@ -67,6 +82,8 @@ const Logo = () => {
 // ......Buttons to Navigate between one-one, Group chat & change Theme.....
 
 const NavButtons = () => {
+  const setOpen = useSetRecoilState(openDrawer);
+  const setSideBar = useSetRecoilState(selectSideBar);
   const [selected, setSelected] = useState(0);
   const theme = useTheme();
 
@@ -101,7 +118,14 @@ const NavButtons = () => {
             </IconButton>
           </Box>
         ) : (
-          <IconButton key={el.index} onClick={() => setSelected(el.index)}>
+          <IconButton
+            key={el.index}
+            onClick={() => {
+              setSelected(el.index),
+                setSideBar(el.index == 0 ? "one-one" : "group"),
+                setOpen(true);
+            }}
+          >
             {el.icon}
           </IconButton>
         )
@@ -111,7 +135,7 @@ const NavButtons = () => {
         sx={{ height: "48px", bgcolor: theme.palette.text.secondary }}
       />
       <ToggleColor />
-      <ToggleTheme />
+      {window.innerWidth > 900 && <ToggleTheme />}
     </Stack>
   );
 };

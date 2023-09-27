@@ -19,10 +19,10 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        width: "calc(100vw - 410px)",
         marginLeft: "5px",
         p: 2,
         height: "80px",
+        minWidth: "350px",
         bgcolor: theme.palette.background.default,
       }}
     >

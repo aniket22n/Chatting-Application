@@ -1,5 +1,13 @@
 import { useTheme } from "@mui/material/styles";
-import { Avatar, Badge, Box, Divider, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Badge,
+  Card,
+  Box,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { faker } from "@faker-js/faker";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
@@ -21,17 +29,17 @@ interface ChatElementType {
 const ChatElement = ({ Input }: { Input: ChatElementType }) => {
   const theme = useTheme();
   return (
-    <Box
+    <Card
+      elevation={4}
       sx={{
         width: "100%",
-        borderRadius: 1,
         backgroundColor:
           theme.palette.mode === "light"
             ? "#fff"
             : theme.palette.background.default,
-        boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.15)",
+        borderRadius: "20px",
+        p: 2,
       }}
-      p={2}
     >
       <Stack
         direction={"row"}
@@ -39,7 +47,7 @@ const ChatElement = ({ Input }: { Input: ChatElementType }) => {
         alignItems={"center"}
         justifyContent={"space-between"}
       >
-        <Stack direction={"row"} spacing={2}>
+        <Stack direction={"row"} spacing={2} alignItems={"center"}>
           {Input.online ? (
             // StyledBadge from Components
             <StyledBadge
@@ -53,7 +61,7 @@ const ChatElement = ({ Input }: { Input: ChatElementType }) => {
             <Avatar src={faker.image.avatar()} />
           )}
           <Stack spacing={0.3}>
-            <Typography variant="subtitle2">{Input.name}</Typography>
+            <Typography variant="subtitle1">{Input.name}</Typography>
             <Typography variant="caption">
               {Input.msg.substring(0, 25) +
                 (Input.msg.length > 25 ? " ..." : "")}
@@ -65,7 +73,7 @@ const ChatElement = ({ Input }: { Input: ChatElementType }) => {
           <Badge color="primary" badgeContent={Input.unread} />
         </Stack>
       </Stack>
-    </Box>
+    </Card>
   );
 };
 
@@ -74,7 +82,7 @@ const OneOneChat = () => {
   return (
     <Box
       sx={{
-        width: "400px",
+        width: "100%",
         height: "calc(100vh - 80px)",
         bgcolor: theme.palette.background.paper,
         boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.15)",
@@ -116,7 +124,7 @@ const OneOneChat = () => {
               maxHeight: "calc(100vh - 255px )",
             }}
           >
-            <Stack spacing={2} p={1}>
+            <Stack spacing={1.5} p={1} pr={2}>
               {/* ChatElement */}
               {ChatList.map((el: ChatElementType, index: number) => {
                 return <ChatElement key={index} Input={el} />;
