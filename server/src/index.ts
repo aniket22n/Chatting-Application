@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { dbConnect } from "./db/connection";
 import userRouter from "./controllers/user";
+import searchRouter from "./controllers/search";
 import cookeParser from "cookie-parser";
 
 const app = express();
@@ -15,9 +16,8 @@ app.use(
 );
 app.use(express.json());
 app.use(cookeParser());
-
-dbConnect();
 app.use(userRouter);
+app.use(searchRouter);
 
 interface ServerToClientEvents {
   noArg: () => void;
@@ -63,6 +63,16 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Socket.io server is running on http://localhost:3000");
-});
+dbConnect()
+  .then(() => {
+    try {
+      server.listen(3000, () => {
+        console.log("Socket.io server is running on http://localhost:3000");
+      });
+    } catch (error) {
+      console.log("Can't connect to server");
+    }
+  })
+  .catch((error) => {
+    console.log("Invalid DB connection");
+  });

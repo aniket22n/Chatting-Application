@@ -1,18 +1,26 @@
-import { Avatar, Box, Divider, IconButton, Stack } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ChatCircleDots, List, Users } from "phosphor-react";
-import { faker } from "@faker-js/faker";
 import { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
-import darkLogo from "../../assets/logo/dark-logo.png";
-import lightLogo from "../../assets/logo/light-logo.png";
+// import darkLogo from "../../assets/logo/dark-logo.png";
+// import lightLogo from "../../assets/logo/light-logo.png";
 import ToggleTheme from "../../components/toggleTheme/ToggleTheme";
 import ToggleColor from "../../components/toggleTheme/ToggleColor";
 import { selectSideBar } from "../../store/atoms/selectSideBar";
 import { openDrawer } from "../../store/atoms/drawer";
+import { user } from "../../store/atoms/user";
 
 const TopBar = () => {
+  const userData = useRecoilValue(user);
   const theme = useTheme();
 
   return (
@@ -30,16 +38,17 @@ const TopBar = () => {
         alignItems={"center"}
         justifyContent={"space-between"}
         sx={{ height: "100%", p: 3 }}
+        spacing={2}
       >
-        <Stack direction={"row"} spacing={4}>
+        <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <Drawer />
-          {innerWidth > 900 && <Logo />}
+          {/*innerWidth > 900 && <Logo />*/}
           <NavButtons />
         </Stack>
 
         <Avatar
           sx={{ border: `solid ${theme.palette.text.primary} 1px` }}
-          src={faker.image.avatar()}
+          src={userData?.image}
         />
       </Stack>
     </Box>
@@ -59,25 +68,25 @@ const Drawer = () => {
 
 //............. Logo ....................
 
-const Logo = () => {
-  const theme = useTheme();
-  return (
-    <Stack
-      p={1.2}
-      sx={{
-        bgcolor: theme.palette.primary.main,
-        borderRadius: "50%",
-        boxShadow: "0px 0px 6px 0px rgba(0, 0, 0, 0.50)",
-      }}
-    >
-      <img
-        src={theme.palette.mode == "light" ? lightLogo : darkLogo}
-        height={"50px"}
-        width={"50px"}
-      />
-    </Stack>
-  );
-};
+// const Logo = () => {
+//   const theme = useTheme();
+//   return (
+//     <Stack
+//       p={1.2}
+//       sx={{
+//         bgcolor: theme.palette.primary.main,
+//         borderRadius: "50%",
+//         boxShadow: "0px 0px 6px 0px rgba(0, 0, 0, 0.50)",
+//       }}
+//     >
+//       <img
+//         src={theme.palette.mode == "light" ? lightLogo : darkLogo}
+//         height={"50px"}
+//         width={"50px"}
+//       />
+//     </Stack>
+//   );
+// };
 
 // ......Buttons to Navigate between one-one, Group chat & change Theme.....
 
@@ -91,20 +100,21 @@ const NavButtons = () => {
     {
       index: 0,
       icon: <ChatCircleDots size={24} />,
+      name: "chats",
     },
     {
       index: 1,
       icon: <Users size={24} />,
+      name: "groups",
     },
   ];
 
   return (
-    <Stack direction={"row"} alignItems={"center"} spacing={3}>
+    <Stack direction={"row"} alignItems={"center"} spacing={2}>
       {navButtons.map((el) =>
         el.index === selected ? (
           <Box
             key={el.index}
-            p={0.5}
             sx={{
               backgroundColor: theme.palette.primary.main,
               borderRadius: 1.5,
@@ -114,7 +124,10 @@ const NavButtons = () => {
               sx={{ width: "max-content", color: "#fff" }}
               key={el.index}
             >
-              {el.icon}
+              <Stack alignItems={"center"} spacing={0.2}>
+                {el.icon}
+                <Typography>{el.name}</Typography>
+              </Stack>
             </IconButton>
           </Box>
         ) : (
@@ -126,7 +139,10 @@ const NavButtons = () => {
                 setOpen(true);
             }}
           >
-            {el.icon}
+            <Stack alignItems={"center"} spacing={0.2}>
+              {el.icon}
+              <Typography>{el.name}</Typography>
+            </Stack>
           </IconButton>
         )
       )}

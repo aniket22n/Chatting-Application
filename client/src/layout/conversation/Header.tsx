@@ -23,7 +23,7 @@ const Header = () => {
         alignItems={"center"}
         sx={{ height: "100%", width: "100%", p: 4 }}
       >
-        <Stack direction={"row"} spacing={2}>
+        <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <StyledBadge
             overlap="circular"
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

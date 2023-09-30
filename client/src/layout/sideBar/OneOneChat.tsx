@@ -7,14 +7,22 @@ import {
   Divider,
   Stack,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { faker } from "@faker-js/faker";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+import { MagnifyingGlass, UserPlus, X } from "phosphor-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 import SearchBar from "../../components/sideBar/SearchBar";
 import { ChatList } from "./testingData";
 import { StyledBadge } from "../../components/StyledBadge";
+import { useRecoilState } from "recoil";
+import { searchUser } from "../../store/atoms/search";
+import { searchResponseType, searchType } from "../../zod/zod";
+import { useState } from "react";
 
 interface ChatElementType {
   id: number;
@@ -90,19 +98,7 @@ const OneOneChat = () => {
     >
       <Stack alignItems={"center"} spacing={2} p={2.5}>
         {/*****************  Header *******************/}
-        <Stack
-          direction={"row"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          spacing={2}
-          sx={{ width: "100%", height: "80px" }}
-        >
-          <Typography fontSize={"40px"} variant="subtitle2" fontWeight={"600"}>
-            Chats
-          </Typography>
-          {/* import SearchBar */}
-          <SearchBar />
-        </Stack>
+        <SearchFriends />
 
         <Divider
           sx={{ width: "340px", bgcolor: theme.palette.text.secondary }}
@@ -136,4 +132,119 @@ const OneOneChat = () => {
     </Box>
   );
 };
+
+// Search component
+function SearchFriends() {
+  const theme = useTheme();
+  const [username, setUsername] = useRecoilState(searchUser);
+  const [search, setSearch] = useState<searchResponseType>();
+
+  const handleSearch = async () => {
+    if (typeof username !== "string" || username === "") {
+      return toast.error("Invalid or Empty search data");
+    }
+    try {
+      const userData: searchType = { username };
+      // Use Axios's `params` option to send query parameters
+      const response = await axios.post(
+        "http://localhost:3000/search",
+        userData,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setSearch(response.data.searchResponse);
+      }
+    } catch (error: any) {
+      const code = error.request.status;
+      if (code == 404) toast.info("user dosen't exists, try other ");
+    }
+
+    setUsername("");
+  };
+
+  if (search) {
+    return (
+      <Stack direction={"row"} alignItems={"center"} spacing={2}>
+        {/****************  Card to display user info  ***************/}
+        <Card
+          elevation={6}
+          sx={{
+            height: "80px",
+            width: "200px",
+            borderRadius: "20px",
+          }}
+        >
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            spacing={2}
+            p={2}
+            sx={{ height: "100%", width: "100%" }}
+          >
+            {" "}
+            <Avatar
+              src={search.image}
+              sx={{
+                width: 56,
+                height: 56,
+                border: `solid ${theme.palette.text.primary} 1px`,
+              }}
+            />
+            <Typography variant="subtitle1">{search.username}</Typography>
+          </Stack>
+        </Card>
+
+        {/****************  Button to hit Add user route  ***************/}
+        <IconButton
+          sx={{
+            bgcolor: theme.palette.success.main,
+            color: "#000",
+            border: `solid ${theme.palette.text.primary} 1px`,
+          }}
+        >
+          <UserPlus size={24} />
+        </IconButton>
+
+        {/**************** cancle button  ***************/}
+        <IconButton
+          sx={{
+            bgcolor: theme.palette.error.dark,
+            color: "#000",
+            border: `solid ${theme.palette.text.primary} 1px`,
+          }}
+          onClick={() => setSearch(undefined)}
+        >
+          <X size={24} />
+        </IconButton>
+      </Stack>
+    );
+  }
+
+  return (
+    <Stack
+      direction={"row"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      spacing={2}
+      sx={{ width: "100%", height: "80px" }}
+    >
+      {/*SearchBar */}
+      <SearchBar />
+      <IconButton
+        sx={{
+          bgcolor: theme.palette.primary.main,
+          borderRadius: theme.palette.text.primary,
+        }}
+        onClick={handleSearch}
+      >
+        <MagnifyingGlass color="#fff" />
+      </IconButton>
+    </Stack>
+  );
+}
+
 export default OneOneChat;

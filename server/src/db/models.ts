@@ -2,8 +2,46 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
+  email: { type: String, required: true },
+  image: { type: String, required: true },
+  online: { type: Boolean, default: false, required: true },
+  unread: { type: Number, default: 0, required: true },
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   password: { type: String, required: true },
-  gender: { type: String, required: true },
+  passwordResetToken: String,
+  passwordResetTokenExpiration: String,
+});
+
+const chatSchema = new mongoose.Schema({
+  participants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
+  messages: [
+    {
+      content: { type: String, required: true },
+      timestamp: { type: Date, default: Date.now },
+      sender: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      receiver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    },
+  ],
 });
 
 export const User = mongoose.model("User", userSchema);
+export const Chat = mongoose.model("Chat", chatSchema);

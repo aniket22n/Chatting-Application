@@ -12,7 +12,7 @@ export const messages = [
     type: "msg",
     sender: 4,
     receiver: 5,
-    message: "this is first message",
+    content: "this is first message",
     time: formattedTime,
   },
   {
@@ -20,7 +20,7 @@ export const messages = [
     type: "msg",
     sender: 5,
     receiver: 4,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -28,7 +28,7 @@ export const messages = [
     type: "msg",
     sender: 4,
     receiver: 5,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -36,7 +36,7 @@ export const messages = [
     type: "msg",
     sender: 5,
     receiver: 4,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -44,7 +44,7 @@ export const messages = [
     type: "msg",
     sender: 4,
     receiver: 5,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -52,7 +52,7 @@ export const messages = [
     type: "msg",
     sender: 5,
     receiver: 4,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -60,7 +60,7 @@ export const messages = [
     type: "msg",
     sender: 4,
     receiver: 5,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -68,7 +68,7 @@ export const messages = [
     type: "msg",
     sender: 5,
     receiver: 4,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -76,7 +76,7 @@ export const messages = [
     type: "msg",
     sender: 4,
     receiver: 5,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
   {
@@ -84,7 +84,7 @@ export const messages = [
     type: "msg",
     sender: 5,
     receiver: 4,
-    message: faker.name.bio(),
+    content: faker.name.bio(),
     time: formattedTime,
   },
 ];

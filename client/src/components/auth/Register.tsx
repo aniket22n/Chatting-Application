@@ -1,17 +1,19 @@
-import { Card, TextField, Button, Typography, Grid } from "@mui/material";
-import { AccountCircle, Fingerprint } from "@mui/icons-material";
+import { Card, TextField, Button, Grid } from "@mui/material";
+import {
+  AccountCircle,
+  AlternateEmail,
+  Fingerprint,
+} from "@mui/icons-material";
 import { useState, useReducer } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useRecoilValue } from "recoil";
-import { z } from "zod";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ControlledRadioButtonsGroup } from "./RadioButtons";
+import { registerType } from "../../zod/zod";
 import "../../style/auth.css";
-import { atomImage } from "../../store/atoms/image";
+import gooseImage from "../../assets/logo/light-logo.png";
 
 const textFieldStyle = {
   style: {
@@ -22,17 +24,25 @@ const textFieldStyle = {
 // State management using useReducer
 const initialState = {
   username: "",
+  email: "",
   password: "",
   confirmPassword: "",
 };
 
-type State = { username: string; password: string; confirmPassword: string };
+type State = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 type Action = { type: string; payload: string };
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "username":
       return { ...state, username: action.payload.trim() };
+    case "email":
+      return { ...state, email: action.payload.trim() };
     case "password":
       return { ...state, password: action.payload.trim() };
     case "confirmPassword":
@@ -42,24 +52,36 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
-// Zod validation
-const registerZod = z.object({
-  username: z.string().min(1).max(15),
-  password: z.string().min(4).max(15),
-  gender: z.string(),
-});
-type registerType = z.infer<typeof registerZod>;
+function isValidEmail(email: string) {
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  return emailRegex.test(email);
+}
 
 export default function Register() {
   const redirect = useNavigate();
-  const gender = useRecoilValue(atomImage);
   const [show, setShow] = useState({ pass: false, cPass: false });
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        setSelectedImage(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleRegister = async () => {
     // Validation Section
     if (state.username.length < 1) {
       toast.error("Enter username");
+    } else if (!isValidEmail(state.email)) {
+      toast.error("Invalid email format");
     } else if (state.password.length < 4) {
       toast.error("Minimum password length: 4 characters");
     } else if (state.password !== state.confirmPassword) {
@@ -69,8 +91,12 @@ export default function Register() {
         // User Input
         const registerData: registerType = {
           username: state.username,
+          email: state.email,
+          image: selectedImage || (gooseImage as string),
           password: state.password,
-          gender,
+          online: false,
+          unread: 0,
+          friends: [],
         };
         // Make a registration request to the server
         const response = await axios.post(
@@ -103,25 +129,54 @@ export default function Register() {
           </Helmet>
         </HelmetProvider>
 
-        <Card className="login-card" elevation={24}>
-          <img
-            className="image-register"
-            src={`${gender == "male" ? "male.gif" : "female.gif"} `}
-          />
-
+        <Card
+          className="login-card"
+          elevation={24}
+          sx={{
+            height: "100%",
+            display: "flex",
+            direction: "column",
+            alignItems: "center",
+          }}
+        >
           <div className="login-form">
-            <Typography className="title">Join GooseChat</Typography>
-            <ControlledRadioButtonsGroup />
+            <div>
+              <img
+                src={selectedImage || gooseImage}
+                alt="Selected"
+                style={{
+                  maxWidth: "150px",
+                  height: "150px",
+                  borderRadius: "50%",
+                }}
+              />
+            </div>
+
             <TextField
               className="text-field"
               placeholder="Username"
               type="text"
+              autoComplete="off"
               InputProps={{
                 ...textFieldStyle,
                 endAdornment: <AccountCircle className="icon" />,
               }}
               onChange={(e) =>
                 dispatch({ type: "username", payload: e.target.value })
+              }
+            />
+
+            <TextField
+              className="text-field"
+              placeholder="Email"
+              type="email"
+              autoComplete="off"
+              InputProps={{
+                ...textFieldStyle,
+                endAdornment: <AlternateEmail className="icon" />,
+              }}
+              onChange={(e) =>
+                dispatch({ type: "email", payload: e.target.value })
               }
             />
 
@@ -165,7 +220,31 @@ export default function Register() {
               }
             />
 
-            <Button className="button" onClick={handleRegister}>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                id="image-upload"
+                onChange={handleImageSelect}
+              />
+              <label htmlFor="image-upload">
+                <Button
+                  variant="contained"
+                  fullWidth
+                  color="inherit"
+                  component="span"
+                >
+                  Select Image
+                </Button>
+              </label>
+            </div>
+
+            <Button
+              className="button"
+              onClick={handleRegister}
+              sx={{ marginTop: "20px" }}
+            >
               Register
             </Button>
 

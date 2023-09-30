@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
-import { z } from "zod";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 import "../../style/auth.css";
+import { loginType } from "../../zod/zod";
+import { useSetRecoilState } from "recoil";
+import { user } from "../../store/atoms/user";
 
 const textFieldStyle = {
   style: {
@@ -16,15 +18,9 @@ const textFieldStyle = {
   },
 };
 
-// Zod
-const loginZod = z.object({
-  username: z.string().min(1).max(15),
-  password: z.string().min(4).max(15),
-});
-type loginType = z.infer<typeof loginZod>;
-
 export default function Login() {
   const redirect = useNavigate();
+  const setUser = useSetRecoilState(user);
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +40,7 @@ export default function Login() {
         );
         if (response.status == 200) {
           toast.success(response.data.message);
+          setUser(response.data.loginResponse);
           redirect("/");
         }
       } catch (error: any) {

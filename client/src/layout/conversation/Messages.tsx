@@ -24,9 +24,10 @@ const Messages = () => {
           width: "thin",
         }}
       >
-        {messages.map((el) => {
+        {messages.map((el, index) => {
           return (
             <Stack
+              key={index}
               direction={"row"}
               justifyContent={el.sender == userId ? "end" : "start"}
               spacing={1}
@@ -37,12 +38,12 @@ const Messages = () => {
                   <Box
                     sx={{
                       p: 1.5,
-                      bgcolor: theme.palette.grey[400],
+                      bgcolor: theme.palette.grey[500],
                       color: "#000",
                       borderRadius: "0px 20px 20px 20px",
                     }}
                   >
-                    {el.message}
+                    {el.content}
                   </Box>
                   <Box sx={{ fontSize: "14px" }}>{el.time}</Box>
                 </Stack>
@@ -57,7 +58,7 @@ const Messages = () => {
                       borderRadius: "20px 0px 20px 20px",
                     }}
                   >
-                    {el.message}
+                    {el.content}
                   </Box>
                   <Box sx={{ fontSize: "14px" }}>{el.time}</Box>
                 </Stack>

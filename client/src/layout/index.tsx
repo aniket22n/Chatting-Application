@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 
 import TopBar from "./topBar/TopBar";
 import OneOneChat from "./sideBar/OneOneChat";
-import Chat from "./conversation/Chat";
+import Chat from "./conversation/index";
 import GroupChat from "./sideBar/GroupChat";
 import { selectSideBar } from "../store/atoms/selectSideBar";
 import { openDrawer } from "../store/atoms/drawer";
@@ -39,7 +39,7 @@ const Layout = () => {
     <Box
       sx={{
         width: "100vw",
-        maxHeight: "100vh",
+        height: "100vh",
         bgcolor: theme.palette.background.default,
       }}
     >

@@ -1,6 +1,5 @@
 import { Stack, Box, Typography, Divider } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import SearchBar from "../../components/sideBar/SearchBar";
 
 const GroupChat = () => {
   const theme = useTheme();
@@ -25,8 +24,6 @@ const GroupChat = () => {
           <Typography fontSize={"40px"} variant="subtitle2" fontWeight={"600"}>
             Groups
           </Typography>
-          {/* import SearchBar */}
-          <SearchBar />
         </Stack>
         <Divider
           sx={{ width: "340px", bgcolor: theme.palette.text.secondary }}
