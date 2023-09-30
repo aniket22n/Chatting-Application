@@ -7,12 +7,14 @@ import {
   registerSchemaZod,
   loginResponseType,
   friendsType,
-} from "../zod/zod";
+} from "../Types/zod";
 import { User } from "../db/models";
+import { auth } from "../middlewares/authenticate";
 require("dotenv").config("../../.env");
 
 const router = express.Router();
 
+// ***************************** Register route  ************************************
 router.post("/register", async (req, res) => {
   const isDataValid = registerSchemaZod.safeParse(req.body);
   if (isDataValid.success) {
@@ -43,6 +45,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// ***************************** Login route  ************************************
 router.post("/login", async (req, res) => {
   const isDataValid = loginSchemaZod.safeParse(req.body);
   if (!isDataValid.success) {
@@ -72,29 +75,8 @@ router.post("/login", async (req, res) => {
         secure: false,
       });
 
-      const friends: friendsType[] = (
-        await Promise.all(
-          isUser.friends.map(async (id) => {
-            const friend = await User.findOne({ _id: id });
-            if (friend) {
-              return {
-                username: friend.username,
-                image: friend.image,
-                online: friend.online,
-                unread: friend.unread,
-                id: friend._id,
-              };
-            }
-          })
-        )
-      ).filter((friend) => friend !== undefined) as friendsType[];
+      const response = await getResponse(isUser.username);
 
-      const response: loginResponseType = {
-        username: isUser.username,
-        email: isUser.email,
-        image: isUser.image,
-        friends: friends,
-      };
       res
         .status(200)
         .json({ message: "Login successful!", loginResponse: response });
@@ -104,4 +86,46 @@ router.post("/login", async (req, res) => {
   });
 });
 
+// ***************************** isLoggedin route ************************************
+router.get("/isLoggedin", auth, async (req, res) => {
+  const username = req.headers["username"];
+  if (typeof username === "string") {
+    const response = await getResponse(username);
+
+    res.status(200).json({ message: "loggedin", loginResponse: response });
+  }
+});
+
+// ***************************** function to get response ************************************
+async function getResponse(
+  username: string
+): Promise<loginResponseType | undefined> {
+  const isUser = await User.findOne({ username });
+  if (isUser) {
+    const friends: friendsType[] = (
+      await Promise.all(
+        isUser.friends.map(async (id) => {
+          const friend = await User.findOne({ _id: id });
+          if (friend) {
+            return {
+              username: friend.username,
+              image: friend.image,
+              online: friend.online,
+              unread: friend.unread,
+              id: friend._id,
+            };
+          }
+        })
+      )
+    ).filter((friend) => friend !== undefined) as friendsType[];
+
+    const response: loginResponseType = {
+      username: isUser.username,
+      email: isUser.email,
+      image: isUser.image,
+      friends: friends,
+    };
+    return response;
+  }
+}
 export default router;

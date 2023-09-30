@@ -2,10 +2,19 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import cookeParser from "cookie-parser";
+
 import { dbConnect } from "./db/connection";
 import userRouter from "./controllers/user";
 import searchRouter from "./controllers/search";
-import cookeParser from "cookie-parser";
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData,
+} from "./Types/socket";
+
+// ************ instance of express and mounts *******************
 
 const app = express();
 app.use(
@@ -19,25 +28,7 @@ app.use(cookeParser());
 app.use(userRouter);
 app.use(searchRouter);
 
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: String) => void) => void;
-  msg: (message: string) => void;
-}
-
-interface ClientToServerEvents {
-  hello: (msg: string) => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface SocketData {
-  name: string;
-  age: number;
-}
+// *************** socket server on top of http *****************
 
 const server = http.createServer(app);
 const io = new Server<
@@ -50,6 +41,8 @@ const io = new Server<
     origin: "http://localhost:5173",
   },
 });
+
+// ******************** socket operations ****************************
 
 io.on("connection", (socket) => {
   console.log("A user connected");

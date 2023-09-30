@@ -106,3 +106,9 @@ export const searchResponseSchema = z.object({
 });
 
 export type searchResponseType = z.infer<typeof searchResponseSchema>;
+
+//****************** Add user ******************
+
+export const addUserSchemaZod = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
+});
