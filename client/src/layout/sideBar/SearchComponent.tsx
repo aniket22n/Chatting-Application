@@ -7,7 +7,7 @@ import { Avatar, Card, IconButton, Stack, Typography } from "@mui/material";
 
 import { searchUser, searchResponse } from "../../store/atoms/search";
 import SearchBar from "../../components/sideBar/SearchBar";
-import { loginResponseType, searchType } from "../../zod/zod";
+import { loginResponseType, searchType } from "../../Types/zod";
 import { friends } from "../../store/selectors/friends";
 import { user } from "../../store/atoms/user";
 
@@ -21,6 +21,8 @@ function SearchComponent() {
     if (typeof username !== "string" || username === "") {
       return toast.error("Invalid or Empty search data", {
         position: "top-center",
+        pauseOnFocusLoss: false,
+        pauseOnHover: false,
       });
     }
     try {
@@ -38,15 +40,21 @@ function SearchComponent() {
       if (response.status === 200) {
         toast.success(response.data.message, {
           position: "top-center",
+          pauseOnFocusLoss: false,
+          pauseOnHover: false,
         });
         setSearch(response.data.searchResponse);
       }
     } catch (error: any) {
       const code = error.request.status;
-      if (code == 404)
-        toast.info("user dosen't exists", {
-          position: "top-center",
-        });
+      let message;
+      if (code == 404) message = "user dosen't exists";
+      else if (code == 500) message = "server error";
+      toast.info(message, {
+        position: "top-center",
+        pauseOnFocusLoss: false,
+        pauseOnHover: false,
+      });
     }
     setUsername("");
   };
@@ -89,27 +97,41 @@ const DisplayUser = () => {
   // *********** hit addUser route **************************
   const handleConnect = async () => {
     if (search) {
-      const input = { id: search.id };
-      const response = await axios.put("http://localhost:3000/addUser", input, {
-        withCredentials: true,
-      });
-      if (response.status == 200) {
-        toast.success(`${search.username} added to chat list`, {
-          theme: "dark",
-          position: "top-center",
-        });
+      try {
+        const input = { id: search.id };
+        const response = await axios.put(
+          "http://localhost:3000/addUser",
+          input,
+          {
+            withCredentials: true,
+          }
+        );
+        if (response.status == 200) {
+          toast.success(`${search.username} added to chat list`, {
+            theme: "dark",
+            position: "top-center",
+            pauseOnFocusLoss: false,
+            pauseOnHover: false,
+          });
 
-        setSearch(null);
-        if (userState) {
-          // Create a new user data object with the updated friends
-          const updatedUserData: loginResponseType = {
-            ...userState,
-            friends: [...userState.friends, response.data.addUserResponse],
-          };
+          setSearch(null);
+          if (userState) {
+            // Create a new user data object with the updated friends
+            const updatedUserData: loginResponseType = {
+              ...userState,
+              friends: [...userState.friends, response.data.addUserResponse],
+            };
 
-          // Update the user atom with the updated user data
-          setUserState(updatedUserData);
+            // Update the user atom with the updated user data
+            setUserState(updatedUserData);
+          }
         }
+      } catch (error: any) {
+        toast.error("Error", {
+          position: "top-center",
+          pauseOnFocusLoss: false,
+          pauseOnHover: false,
+        });
       }
     }
   };

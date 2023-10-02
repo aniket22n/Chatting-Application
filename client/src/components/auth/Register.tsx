@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { registerType } from "../../zod/zod";
+import { registerType } from "../../Types/zod";
 import "../../style/auth.css";
 import gooseImage from "../../assets/logo/light-logo.png";
 

@@ -8,9 +8,9 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 import "../../style/auth.css";
-import { loginType } from "../../zod/zod";
+import { loginType } from "../../Types/zod";
 import { useSetRecoilState } from "recoil";
-import { user } from "../../store/atoms/user";
+import { isLoggedin, user } from "../../store/atoms/user";
 
 const textFieldStyle = {
   style: {
@@ -21,6 +21,7 @@ const textFieldStyle = {
 export default function Login() {
   const redirect = useNavigate();
   const setUser = useSetRecoilState(user);
+  const setLogin = useSetRecoilState(isLoggedin);
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -41,6 +42,7 @@ export default function Login() {
         if (response.status == 200) {
           toast.success(response.data.message);
           setUser(response.data.loginResponse);
+          setLogin(true);
           redirect("/");
         }
       } catch (error: any) {

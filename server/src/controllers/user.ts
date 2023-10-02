@@ -105,7 +105,7 @@ async function getResponse(
     const friends: friendsType[] = (
       await Promise.all(
         isUser.friends.map(async (id) => {
-          const friend = await User.findOne({ _id: id });
+          const friend = await User.findOne({ _id: id.friend_id });
           if (friend) {
             return {
               username: friend.username,
@@ -113,6 +113,7 @@ async function getResponse(
               online: friend.online,
               unread: friend.unread,
               id: friend._id,
+              chat_id: id.chat_id,
             };
           }
         })
@@ -120,6 +121,7 @@ async function getResponse(
     ).filter((friend) => friend !== undefined) as friendsType[];
 
     const response: loginResponseType = {
+      id: isUser._id,
       username: isUser.username,
       email: isUser.email,
       image: isUser.image,

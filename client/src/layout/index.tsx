@@ -1,8 +1,8 @@
 import { useTheme } from "@mui/material/styles";
-import { Box, CssBaseline, Drawer, Stack, styled } from "@mui/material";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { Box, CssBaseline, Drawer, Stack, Typography } from "@mui/material";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useEffect } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router";
 
 import TopBar from "./topBar/TopBar";
 import OneOneChat from "./sideBar/OneOneChat";
@@ -10,57 +10,53 @@ import Chat from "./conversation/index";
 import GroupChat from "./sideBar/GroupChat";
 import { selectSideBar } from "../store/atoms/selectSideBar";
 import { openDrawer } from "../store/atoms/drawer";
-import { user } from "../store/atoms/user";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
-
-const drawerWidth = 400;
-
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  }),
-}));
+import { isLoggedin, user } from "../store/atoms/user";
+import { Main } from "../components/customDrawer";
+import { selectedChat } from "../store/atoms/selectedChat";
+import { getResponse } from "./isLoggedin";
+import { connectSocket, socket } from "./socket";
 
 const Layout = () => {
   const redirect = useNavigate();
   const theme = useTheme();
   const sideBar = useRecoilValue(selectSideBar);
   const open = useRecoilValue(openDrawer);
-  const setUser = useSetRecoilState(user);
+  const chat = useRecoilValue(selectedChat);
+  const [userState, setUserState] = useRecoilState(user);
+  const [login, setLogin] = useRecoilState(isLoggedin);
 
   // *************** check if user loggedin **************
   useEffect(() => {
-    const getResponse = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/isLoggedin", {
-          withCredentials: true,
-        });
-        if (response.status === 200) {
-          setUser(response.data.loginResponse);
-        }
-      } catch (error: any) {
-        const code = error.request.status;
-        if (code == 401)
-          toast.warning("Please login", { position: "top-center" });
-        redirect("/login");
-      }
-    };
-    getResponse();
+    getResponse(setLogin, setUserState, redirect);
   }, []);
+
+  useEffect(() => {
+    if (login && userState) {
+      if (!socket) {
+        connectSocket(userState.id.toString());
+      }
+      // ************************* socket operations *************************
+
+      socket.on("online", (id, online) => {
+        // Map over the userState.friends array and create a new array with updated friends
+        const updatedFriends = userState.friends.map((friend) => {
+          // Check if the friend's ID matches the ID received in the event
+          if (friend.id.toString() === id) {
+            // Create a new object with the updated online status
+            return { ...friend, online: online };
+          }
+          // Return the friend object as is (unchanged)
+          return friend;
+        });
+
+        // Update the userState with the updated friends array
+        setUserState({ ...userState, friends: updatedFriends });
+
+        // Log the updated userState (for debugging purposes)
+        console.log(userState);
+      });
+    }
+  }, [login, socket]);
 
   return (
     <Box
@@ -78,10 +74,10 @@ const Layout = () => {
           <CssBaseline />
           <Drawer
             sx={{
-              width: drawerWidth,
+              width: 400,
               flexShrink: 0,
               "& .MuiDrawer-paper": {
-                width: drawerWidth,
+                width: 400,
                 height: "calc(100vh - 80px)",
                 marginTop: "80px",
               },
@@ -100,7 +96,18 @@ const Layout = () => {
           >
             {/****************** Conversation **************/}
 
-            <Chat />
+            {chat ? (
+              <Chat />
+            ) : (
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                sx={{ height: "calc(100vh - 80px)", width: "100%" }}
+              >
+                <Typography variant="h2">Select chat</Typography>
+              </Stack>
+            )}
           </Main>
         </Box>
       </Stack>

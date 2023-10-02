@@ -7,66 +7,85 @@ import {
   Divider,
   Stack,
   Typography,
+  Button,
 } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
 import { StyledBadge } from "../../components/StyledBadge";
 import SearchComponent from "./SearchComponent";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { friends } from "../../store/selectors/friends";
-import { friendsType } from "../../zod/zod";
+import { friendsType } from "../../Types/zod";
+import { selectedChat } from "../../store/atoms/selectedChat";
+import { openDrawer } from "../../store/atoms/drawer";
 
 // ***** message and time are hardcoded as of now *************
 const ChatElement = ({ Input }: { Input: friendsType }) => {
+  const [chat, setChat] = useRecoilState(selectedChat);
+  const setDrawer = useSetRecoilState(openDrawer);
   const theme = useTheme();
+
   return (
-    <Card
-      elevation={4}
+    <Button
       sx={{
-        width: "100%",
-        backgroundColor:
-          theme.palette.mode === "light"
-            ? "#fff"
-            : theme.palette.background.default,
         borderRadius: "20px",
-        p: 2,
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+      }}
+      disableRipple
+      onClick={() => {
+        setChat(Input), setDrawer(window.innerWidth < 500 ? false : true);
       }}
     >
-      <Stack
-        direction={"row"}
-        spacing={2}
-        alignItems={"center"}
-        justifyContent={"space-between"}
+      <Card
+        elevation={Input.id == chat?.id ? 10 : 4}
+        sx={{
+          width: "100%",
+          backgroundColor:
+            theme.palette.mode === "light"
+              ? "#fff"
+              : theme.palette.background.default,
+          borderRadius: "20px",
+          p: 2,
+        }}
       >
-        <Stack direction={"row"} spacing={2} alignItems={"center"}>
-          {Input.online ? (
-            // StyledBadge from Components
-            <StyledBadge
-              overlap="circular"
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              variant="dot"
-            >
+        <Stack
+          direction={"row"}
+          spacing={2}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
+            {Input.online ? (
+              // StyledBadge from Components
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                variant="dot"
+              >
+                <Avatar src={Input.image} />
+              </StyledBadge>
+            ) : (
               <Avatar src={Input.image} />
-            </StyledBadge>
-          ) : (
-            <Avatar src={Input.image} />
-          )}
-          <Stack spacing={0.3}>
-            <Typography variant="subtitle1">{Input.username}</Typography>
-            <Typography variant="caption">
-              "start chatting"
-              {/* {Input.msg.substring(0, 25) +
+            )}
+            <Stack spacing={0.3}>
+              <Typography variant="subtitle1">{Input.username}</Typography>
+              <Typography variant="caption">
+                "start chatting"
+                {/* {Input.msg.substring(0, 25) +
                 (Input.msg.length > 25 ? " ..." : "")} */}
-            </Typography>
+              </Typography>
+            </Stack>
+          </Stack>
+          <Stack spacing={2} alignItems={"center"}>
+            <Typography sx={{ fontWeight: 600 }}>00</Typography>
+            <Badge color="primary" badgeContent={Input.unread} />
           </Stack>
         </Stack>
-        <Stack spacing={2} alignItems={"center"}>
-          <Typography sx={{ fontWeight: 600 }}>00</Typography>
-          <Badge color="primary" badgeContent={Input.unread} />
-        </Stack>
-      </Stack>
-    </Card>
+      </Card>
+    </Button>
   );
 };
 

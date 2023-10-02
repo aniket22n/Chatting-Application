@@ -30,6 +30,7 @@ const TopBar = () => {
         height: "80px",
         bgcolor: theme.palette.background.default,
         boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.05)",
+        borderBottom: `solid ${theme.palette.background.paper} 2px`,
         zIndex: "1",
       }}
     >

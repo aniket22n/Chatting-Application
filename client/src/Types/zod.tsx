@@ -15,7 +15,12 @@ export const registerSchemaZod = z.object({
   image: z.string(), //  Base64 format
   online: z.boolean().default(false),
   unread: z.number().default(0),
-  friends: z.array(z.custom<mongoose.Types.ObjectId>()),
+  friends: z.array(
+    z.object({
+      friend_id: z.custom<mongoose.Types.ObjectId>(),
+      chat_id: z.custom<mongoose.Types.ObjectId>(),
+    })
+  ),
   password: z
     .string()
     .min(4, { message: "Password must be at least 4 characters long" })
@@ -48,10 +53,12 @@ export const friends = z.object({
   image: z.string(), //  Base64 format
   online: z.boolean().default(false),
   unread: z.number().default(0),
+  chat_id: z.custom<mongoose.Types.ObjectId>(),
 });
 export type friendsType = z.infer<typeof friends>;
 
 export const loginResponseZod = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
   username: z
     .string()
     .min(1, "Username is required")
@@ -106,3 +113,9 @@ export const searchResponseSchema = z.object({
 });
 
 export type searchResponseType = z.infer<typeof searchResponseSchema>;
+
+//****************** Add user ******************
+
+export const addUserSchemaZod = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
+});

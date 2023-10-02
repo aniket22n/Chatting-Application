@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { searchResponseType } from "../../zod/zod";
+import { searchResponseType } from "../../Types/zod";
 
 export const searchUser = atom({
   key: "searchUserKey",

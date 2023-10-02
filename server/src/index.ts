@@ -7,12 +7,14 @@ import cookeParser from "cookie-parser";
 import { dbConnect } from "./db/connection";
 import userRouter from "./controllers/user";
 import searchRouter from "./controllers/search";
+import addFriendRoute from "./controllers/addFriend";
 import {
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
 } from "./Types/socket";
+import { User } from "./db/models";
 
 // ************ instance of express and mounts *******************
 
@@ -27,8 +29,9 @@ app.use(express.json());
 app.use(cookeParser());
 app.use(userRouter);
 app.use(searchRouter);
+app.use(addFriendRoute);
 
-// *************** socket server on top of http *****************
+// *************** mount socket server on top of http *****************
 
 const server = http.createServer(app);
 const io = new Server<
@@ -44,15 +47,26 @@ const io = new Server<
 
 // ******************** socket operations ****************************
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
+io.on("connection", async (socket) => {
+  const user_id = socket.handshake.query["user_id"];
+  const socket_id = socket.id;
 
-  socket.on("hello", (msg) => {
-    socket.broadcast.emit("msg", msg);
+  const this_user = await User.findByIdAndUpdate(user_id, {
+    socket_id,
+    online: true,
   });
+  if (user_id) {
+    io.emit("online", user_id.toString(), true);
+  }
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
+  socket.on("disconnect", async () => {
+    const this_user = await User.findByIdAndUpdate(user_id, {
+      socket_id: 0,
+      online: false,
+    });
+    if (user_id) {
+      io.emit("online", user_id.toString(), false);
+    }
   });
 });
 

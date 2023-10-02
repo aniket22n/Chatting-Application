@@ -1,6 +1,6 @@
 import { selector } from "recoil";
 import { user } from "../atoms/user";
-import { friendsType } from "../../zod/zod";
+import { friendsType } from "../../Types/zod";
 
 export const friends = selector({
   key: "ThisIsFriendsSelectorKey",

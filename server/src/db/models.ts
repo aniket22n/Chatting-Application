@@ -6,10 +6,16 @@ const userSchema = new mongoose.Schema({
   image: { type: String, required: true },
   online: { type: Boolean, default: false, required: true },
   unread: { type: Number, default: 0, required: true },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  friends: [
+    {
+      friend_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      chat_id: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
+    },
+  ],
   password: { type: String, required: true },
   passwordResetToken: String,
   passwordResetTokenExpiration: String,
+  socket_id: { type: String, default: 0, required: true },
 });
 
 const chatSchema = new mongoose.Schema({

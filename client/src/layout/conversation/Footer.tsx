@@ -21,8 +21,8 @@ const Footer = () => {
       sx={{
         marginLeft: "5px",
         p: 2,
+        width: "100vw - 10px",
         height: "80px",
-        minWidth: "350px",
         bgcolor: theme.palette.background.default,
       }}
     >

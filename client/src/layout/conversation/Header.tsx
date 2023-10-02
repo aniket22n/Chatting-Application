@@ -1,16 +1,17 @@
 import { Stack, Box, Avatar, Typography, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { faker } from "@faker-js/faker";
 import { CaretDown } from "phosphor-react";
+import { useRecoilValue } from "recoil";
 
 import { StyledBadge } from "../../components/StyledBadge";
+import { selectedChat } from "../../store/atoms/selectedChat";
 
 const Header = () => {
+  const selected = useRecoilValue(selectedChat);
   const theme = useTheme();
   return (
     <Box
       sx={{
-        minWidth: "350px",
         height: "80px",
         borderLeft: `solid ${theme.palette.text.secondary} 0.1px`,
         bgcolor: theme.palette.background.paper,
@@ -26,18 +27,21 @@ const Header = () => {
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <StyledBadge
             overlap="circular"
+            invisible={!selected?.online}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             variant="dot"
           >
             <Avatar
-              src={faker.image.avatar()}
-              alt={faker.name.fullName()}
+              src={selected?.image}
+              alt={"user image"}
               sx={{ border: `solid ${theme.palette.text.primary} 1px` }}
             />
           </StyledBadge>
           <Stack>
-            <Typography variant="subtitle1">{faker.name.fullName()}</Typography>
-            <Typography variant="caption">online</Typography>
+            <Typography variant="subtitle1">{selected?.username}</Typography>
+            <Typography variant="caption">
+              {selected?.online ? "online" : "offline"}
+            </Typography>
           </Stack>
         </Stack>
 

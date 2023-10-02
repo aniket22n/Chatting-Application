@@ -20,7 +20,7 @@ const Messages = () => {
     <Stack direction={"column-reverse"} sx={{ overflow: 1 }}>
       <SimpleBar
         style={{
-          maxHeight: "calc(100vh - 3*80px)",
+          maxHeight: "calc(100vh - 250px)",
           width: "thin",
         }}
       >
