@@ -13,6 +13,7 @@ const Header = () => {
     <Box
       sx={{
         height: "80px",
+        width: "100%",
         borderLeft: `solid ${theme.palette.text.secondary} 0.1px`,
         bgcolor: theme.palette.background.paper,
         boxShadow: "2px 2px 6px rgba(0,0,0,0.15)",

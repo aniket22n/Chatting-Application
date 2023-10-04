@@ -1,13 +1,25 @@
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Typography } from "@mui/material";
 
 import Header from "./Header";
 import Footer from "./Footer";
 import Messages from "./Messages";
 import { useRecoilValue } from "recoil";
 import { openDrawer } from "../../store/atoms/drawer";
+import { selectedChat } from "../../store/atoms/selectedChat";
 
 const Chat = () => {
   const isOpen = useRecoilValue(openDrawer);
+  const chat = useRecoilValue(selectedChat);
+
+  if (!chat) {
+    return (
+      <center>
+        <Box display={window.innerWidth < 500 && isOpen ? "none" : "block"}>
+          <Typography variant="h2">Select chat</Typography>
+        </Box>
+      </center>
+    );
+  }
   return (
     <Box
       sx={{

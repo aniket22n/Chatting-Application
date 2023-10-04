@@ -11,20 +11,43 @@ import {
 } from "@mui/material";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+import axios from "axios";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { StyledBadge } from "../../components/StyledBadge";
 import SearchComponent from "./SearchComponent";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { friends } from "../../store/selectors/friends";
 import { friendsType } from "../../Types/zod";
 import { selectedChat } from "../../store/atoms/selectedChat";
 import { openDrawer } from "../../store/atoms/drawer";
+import { user } from "../../store/atoms/user";
+import { messages } from "../../store/atoms/message";
 
 // ***** message and time are hardcoded as of now *************
 const ChatElement = ({ Input }: { Input: friendsType }) => {
   const [chat, setChat] = useRecoilState(selectedChat);
   const setDrawer = useSetRecoilState(openDrawer);
+  const userState = useRecoilValue(user);
+  const setMessages = useSetRecoilState(messages);
   const theme = useTheme();
+
+  const handleClick = async () => {
+    setChat(Input);
+    setDrawer(window.innerWidth < 500 ? false : true);
+
+    try {
+      const response = await axios.get("http://localhost:3000/chatHistory", {
+        params: { id: Input.chat_id },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        setMessages(response.data.messages);
+      }
+    } catch (error: any) {
+      console.error("Error fetching chat history:", error);
+    }
+  };
 
   return (
     <Button
@@ -35,9 +58,7 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
         },
       }}
       disableRipple
-      onClick={() => {
-        setChat(Input), setDrawer(window.innerWidth < 500 ? false : true);
-      }}
+      onClick={handleClick}
     >
       <Card
         elevation={Input.id == chat?.id ? 10 : 4}
@@ -58,7 +79,7 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
           justifyContent={"space-between"}
         >
           <Stack direction={"row"} spacing={2} alignItems={"center"}>
-            {Input.online ? (
+            {Input.online || userState?.id == Input.id ? (
               // StyledBadge from Components
               <StyledBadge
                 overlap="circular"

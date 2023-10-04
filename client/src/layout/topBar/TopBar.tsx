@@ -38,10 +38,14 @@ const TopBar = () => {
         direction={"row"}
         alignItems={"center"}
         justifyContent={"space-between"}
-        sx={{ height: "100%", p: 3 }}
-        spacing={2}
+        sx={{ height: "100%", p: window.innerWidth < 500 ? 1 : 3 }}
+        spacing={window.innerWidth < 500 ? 1 : 2}
       >
-        <Stack direction={"row"} spacing={2} alignItems={"center"}>
+        <Stack
+          direction={"row"}
+          spacing={window.innerWidth < 500 ? 1 : 2}
+          alignItems={"center"}
+        >
           <Drawer />
           {/*innerWidth > 900 && <Logo />*/}
           <NavButtons />
@@ -89,7 +93,11 @@ const NavButtons = () => {
   ];
 
   return (
-    <Stack direction={"row"} alignItems={"center"} spacing={2}>
+    <Stack
+      direction={"row"}
+      alignItems={"center"}
+      spacing={window.innerWidth < 500 ? 1 : 2}
+    >
       {navButtons.map((el) =>
         el.index === selected ? (
           <Box

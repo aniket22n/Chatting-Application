@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   passwordResetToken: String,
   passwordResetTokenExpiration: String,
-  socket_id: { type: String, default: 0, required: true },
+  socket_id: { type: String, default: "", required: true },
 });
 
 const chatSchema = new mongoose.Schema({
@@ -34,7 +34,7 @@ const chatSchema = new mongoose.Schema({
   messages: [
     {
       content: { type: String, required: true },
-      timestamp: { type: Date, default: Date.now },
+      timestamp: { type: Number, default: Date.now() },
       sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

@@ -73,23 +73,28 @@ export const loginResponseZod = z.object({
 export type loginResponseType = z.infer<typeof loginResponseZod>;
 
 //****************** message ******************
-
 export const chatParticipantSchema = z.object({
   user: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
 });
 
 export const chatMessageSchema = z.object({
   content: z.string().min(1, { message: "Message content is required" }),
-  timestamp: z.date().default(() => new Date()),
+  timestamp: z.number().default(Date.now()),
   sender: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
   receiver: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
 });
+
+export type chatMessageType = z.infer<typeof chatMessageSchema>;
 
 export const chatSchemaZod = z.object({
   participants: z
     .array(chatParticipantSchema)
     .min(2, { message: "At least 2 participants are required" }),
   messages: z.array(chatMessageSchema),
+});
+
+export const messageRequestSchema = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
 });
 
 //****************** search username ******************
@@ -119,3 +124,5 @@ export type searchResponseType = z.infer<typeof searchResponseSchema>;
 export const addUserSchemaZod = z.object({
   id: z.custom<mongoose.Types.ObjectId>(),
 });
+
+// **************** Messages **********************
