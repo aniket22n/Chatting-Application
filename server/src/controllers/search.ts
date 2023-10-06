@@ -26,9 +26,7 @@ router.post("/search", auth, async (req, res) => {
     image: isUser.image,
   };
 
-  return res
-    .status(200)
-    .json({ message: "User found", searchResponse: response });
+  return res.status(200).json({ message: "User found", response: response });
 });
 
 export default router;

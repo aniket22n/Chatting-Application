@@ -25,7 +25,7 @@ router.get("/chatHistory", auth, async (req, res) => {
     const response = chat.messages;
     return res
       .status(200)
-      .json({ message: "Message history", messages: response });
+      .json({ message: "Message history", response: response });
   } catch (error) {
     console.error("Error fetching chat history:", error);
     return res.status(500).json({ message: "Internal server error" });

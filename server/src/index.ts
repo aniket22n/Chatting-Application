@@ -83,21 +83,19 @@ io.on("connection", async (socket) => {
         $push: { messages: newMessage },
       });
 
-      const getReceiver = await User.findById(receiver).select("socket_id");
-      if (getReceiver) {
-        if (connectedSockets.includes(getReceiver.socket_id)) {
-          io.to(getReceiver.socket_id).emit(
-            "message",
-            sender,
-            receiver,
-            time,
-            message,
-            chat_id
-          );
-        } else {
-          User.findByIdAndUpdate(receiver, {
-            unread: getReceiver.unread + 1,
-          });
+      if (sender != receiver) {
+        const getReceiver = await User.findById(receiver).select("socket_id");
+        if (getReceiver) {
+          if (connectedSockets.includes(getReceiver.socket_id)) {
+            io.to(getReceiver.socket_id).emit(
+              "message",
+              sender,
+              receiver,
+              time,
+              message,
+              chat_id
+            );
+          }
         }
       }
     });

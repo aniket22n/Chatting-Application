@@ -124,5 +124,3 @@ export type searchResponseType = z.infer<typeof searchResponseSchema>;
 export const addUserSchemaZod = z.object({
   id: z.custom<mongoose.Types.ObjectId>(),
 });
-
-// **************** Messages **********************

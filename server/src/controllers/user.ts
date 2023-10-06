@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
 
       res
         .status(200)
-        .json({ message: "Login successful!", loginResponse: response });
+        .json({ message: "Login successful!", response: response });
     } else {
       res.status(401).json({ message: "Incorrect password" });
     }
@@ -92,7 +92,7 @@ router.get("/isLoggedin", auth, async (req, res) => {
   if (typeof username === "string") {
     const response = await getResponse(username);
 
-    res.status(200).json({ message: "loggedin", loginResponse: response });
+    res.status(200).json({ message: "loggedin", response: response });
   }
 });
 

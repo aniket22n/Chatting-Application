@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   passwordResetToken: String,
   passwordResetTokenExpiration: String,
-  socket_id: { type: String, default: "", required: true },
+  socket_id: { type: String, default: "" },
 });
 
 const chatSchema = new mongoose.Schema({
