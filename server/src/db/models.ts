@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   image: { type: String, required: true },
   online: { type: Boolean, default: false, required: true },
-  unread: { type: Number, default: 0, required: true },
   friends: [
     {
       friend_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -31,6 +30,7 @@ const chatSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  unread: { type: Number, default: 0, required: true },
   messages: [
     {
       content: { type: String, required: true },

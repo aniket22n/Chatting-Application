@@ -1,14 +1,12 @@
 import { selector } from "recoil";
-import { user } from "../atoms/user";
+import { userState } from "../atoms/userAtom";
 import { friendsType } from "../../Types/zod";
 
-export const friends = selector({
+export const friends = selector<friendsType[]>({
   key: "ThisIsFriendsSelectorKey",
   get: ({ get }) => {
-    const filter = get(user);
-    if (filter) {
-      const array: friendsType[] = filter?.friends;
-      return array;
-    }
+    const user = get(userState);
+    if (user.info) return user.info.friends;
+    return [];
   },
 });

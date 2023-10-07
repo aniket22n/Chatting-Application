@@ -9,18 +9,17 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { ChatCircleDots, List, Users } from "phosphor-react";
 import { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 // import darkLogo from "../../assets/logo/dark-logo.png";
 // import lightLogo from "../../assets/logo/light-logo.png";
 import ToggleTheme from "../../components/toggleTheme/ToggleTheme";
 import ToggleColor from "../../components/toggleTheme/ToggleColor";
-import { selectSideBar } from "../../store/atoms/selectSideBar";
-import { openDrawer } from "../../store/atoms/drawer";
-import { user } from "../../store/atoms/user";
+import { appState } from "../../store/atoms/appStateAtom";
+import { userState } from "../../store/atoms/userAtom";
 
 const TopBar = () => {
-  const userData = useRecoilValue(user);
+  const user = useRecoilValue(userState);
   const theme = useTheme();
 
   return (
@@ -53,7 +52,7 @@ const TopBar = () => {
 
         <Avatar
           sx={{ border: `solid ${theme.palette.text.primary} 1px` }}
-          src={userData?.image}
+          src={user.info?.image}
         />
       </Stack>
     </Box>
@@ -62,10 +61,14 @@ const TopBar = () => {
 
 // ........... Drawer Open/Close ........
 const Drawer = () => {
-  const setOpen = useSetRecoilState(openDrawer);
+  const [appSetting, setAppSetting] = useRecoilState(appState);
 
   return (
-    <IconButton onClick={() => setOpen((prevOpen) => !prevOpen)}>
+    <IconButton
+      onClick={() =>
+        setAppSetting({ ...appSetting, isDrawerOpen: !appSetting.isDrawerOpen })
+      }
+    >
       <List size={36} />
     </IconButton>
   );
@@ -74,8 +77,7 @@ const Drawer = () => {
 // ......Buttons to Navigate between one-one, Group chat & change Theme.....
 
 const NavButtons = () => {
-  const setOpen = useSetRecoilState(openDrawer);
-  const setSideBar = useSetRecoilState(selectSideBar);
+  const [appSetting, setAppSetting] = useRecoilState(appState);
   const [selected, setSelected] = useState(0);
   const theme = useTheme();
 
@@ -122,8 +124,11 @@ const NavButtons = () => {
             key={el.index}
             onClick={() => {
               setSelected(el.index),
-                setSideBar(el.index == 0 ? "one-one" : "group"),
-                setOpen(true);
+                setAppSetting({
+                  ...appSetting,
+                  selectedSideBar: el.index == 0 ? "one-one" : "group",
+                  isDrawerOpen: true,
+                });
             }}
           >
             <Stack alignItems={"center"} spacing={0.2}>

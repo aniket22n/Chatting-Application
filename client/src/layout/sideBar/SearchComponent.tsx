@@ -5,20 +5,19 @@ import { MagnifyingGlass, UserPlus, X } from "phosphor-react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Avatar, Card, IconButton, Stack, Typography } from "@mui/material";
 
-import { searchUser, searchResponse } from "../../store/atoms/search";
+import { searchState } from "../../store/atoms/searchAtom";
 import SearchBar from "../../components/sideBar/SearchBar";
 import { loginResponseType, searchType } from "../../Types/zod";
 import { friends } from "../../store/selectors/friends";
-import { user } from "../../store/atoms/user";
+import { userState } from "../../store/atoms/userAtom";
 
 // Search component
 function SearchComponent() {
   const theme = useTheme();
-  const [username, setUsername] = useRecoilState(searchUser);
-  const [search, setSearch] = useRecoilState(searchResponse);
+  const [search, setSearch] = useRecoilState(searchState);
 
   const handleSearch = async () => {
-    if (typeof username !== "string" || username === "") {
+    if (typeof search.input !== "string" || search.input === "") {
       return toast.error("Invalid or Empty search data", {
         position: "top-center",
         pauseOnFocusLoss: false,
@@ -26,7 +25,7 @@ function SearchComponent() {
       });
     }
     try {
-      const userData: searchType = { username: username.trim() };
+      const userData: searchType = { username: search.input.trim() };
       //*********** Request User info ********
       const response = await axios.post(
         "http://localhost:3000/search",
@@ -43,7 +42,7 @@ function SearchComponent() {
           pauseOnFocusLoss: false,
           pauseOnHover: false,
         });
-        setSearch(response.data.searchResponse);
+        setSearch({ input: "", response: response.data.response });
       }
     } catch (error: any) {
       const code = error.request.status;
@@ -56,11 +55,10 @@ function SearchComponent() {
         pauseOnHover: false,
       });
     }
-    setUsername("");
   };
 
   // ************* Display response ********************
-  if (search) {
+  if (search.response) {
     return <DisplayUser />;
   }
 
@@ -90,15 +88,15 @@ function SearchComponent() {
 
 const DisplayUser = () => {
   const theme = useTheme();
-  const [search, setSearch] = useRecoilState(searchResponse);
+  const [search, setSearch] = useRecoilState(searchState);
   const friendsArray = useRecoilValue(friends);
-  const [userState, setUserState] = useRecoilState(user);
+  const [user, setUser] = useRecoilState(userState);
 
   // *********** hit addUser route **************************
   const handleConnect = async () => {
     if (search) {
       try {
-        const input = { id: search.id };
+        const input = { id: search.response?.id };
         const response = await axios.put(
           "http://localhost:3000/addUser",
           input,
@@ -107,23 +105,23 @@ const DisplayUser = () => {
           }
         );
         if (response.status == 200) {
-          toast.success(`${search.username} added to chat list`, {
+          toast.success(`${search.response?.username} added to chat list`, {
             theme: "dark",
             position: "top-center",
             pauseOnFocusLoss: false,
             pauseOnHover: false,
           });
 
-          setSearch(null);
-          if (userState) {
+          setSearch({ input: "", response: null });
+          if (user.info) {
             // Create a new user data object with the updated friends
-            const updatedUserData: loginResponseType = {
-              ...userState,
-              friends: [...userState.friends, response.data.addUserResponse],
+            const updatedUserInfo: loginResponseType = {
+              ...user.info,
+              friends: [...user.info.friends, response.data.addUserResponse],
             };
 
             // Update the user atom with the updated user data
-            setUserState(updatedUserData);
+            setUser({ isLoggedin: user.isLoggedin, info: updatedUserInfo });
           }
         }
       } catch (error: any) {
@@ -136,7 +134,7 @@ const DisplayUser = () => {
     }
   };
 
-  if (search) {
+  if (search.response) {
     return (
       <Stack direction={"row"} alignItems={"center"} spacing={2}>
         {/****************  Card to display user info  ***************/}
@@ -158,14 +156,16 @@ const DisplayUser = () => {
           >
             {" "}
             <Avatar
-              src={search.image}
+              src={search.response.image}
               sx={{
                 width: 56,
                 height: 56,
                 border: `solid ${theme.palette.text.primary} 1px`,
               }}
             />
-            <Typography variant="subtitle1">{search.username}</Typography>
+            <Typography variant="subtitle1">
+              {search.response.username}
+            </Typography>
           </Stack>
         </Card>
 
@@ -174,7 +174,7 @@ const DisplayUser = () => {
           // If already friends, hide add button
           friendsArray &&
             !friendsArray?.find(
-              (friend) => friend.username == search.username
+              (friend) => friend.username == search.response?.username
             ) && (
               <IconButton
                 sx={{
@@ -196,7 +196,7 @@ const DisplayUser = () => {
             color: "#000",
             border: `solid ${theme.palette.text.primary} 1px`,
           }}
-          onClick={() => setSearch(null)}
+          onClick={() => setSearch({ input: "", response: null })}
         >
           <X size={24} />
         </IconButton>

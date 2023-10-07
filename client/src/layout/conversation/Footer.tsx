@@ -7,13 +7,13 @@ import {
 } from "@mui/material";
 import { useTheme, styled } from "@mui/material/styles";
 import { Smiley, TelegramLogo } from "phosphor-react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useState } from "react";
 
 import { socket } from "../socket";
-import { user } from "../../store/atoms/user";
-import { selectedChat } from "../../store/atoms/selectedChat";
-import { useState } from "react";
-import { messages } from "../../store/atoms/message";
+import { userState } from "../../store/atoms/userAtom";
+import { appState } from "../../store/atoms/appStateAtom";
+import { chatHistory } from "../../store/atoms/messageState";
 import { chatMessagesType } from "../../Types/zod";
 
 const StyledInput = styled(TextField)(({}) => ({
@@ -24,59 +24,37 @@ const StyledInput = styled(TextField)(({}) => ({
 
 const Footer = () => {
   const theme = useTheme();
+
   const [input, setInput] = useState("");
-  const [userState, setUserState] = useRecoilState(user);
-  const selected = useRecoilValue(selectedChat);
-  const setMessages = useSetRecoilState(messages);
+  const [messages, setMessages] = useRecoilState(chatHistory);
+  const appSettings = useRecoilValue(appState);
+  const user = useRecoilValue(userState);
 
   const handleSendMessage = () => {
     const time = Date.now();
 
-    if (userState && selected) {
-      if (input) {
+    if (user.info && appSettings.selectedChat) {
+      if (input.trim()) {
         const newMessage: chatMessagesType = {
-          content: input,
+          content: input.trim(),
           timestamp: time,
-          sender: userState.id,
-          receiver: selected.id,
+          sender: user.info.id,
+          receiver: appSettings.selectedChat.id,
         };
+
+        setMessages([...messages, newMessage]);
+        setInput("");
 
         socket.emit(
           "message",
-          userState.id,
-          selected.id,
+          user.info.id,
+          appSettings.selectedChat.id,
           time,
-          input,
-          selected.chat_id
+          input.trim(),
+          appSettings.selectedChat.chat_id
         );
-        setMessages((pre) => [...pre, newMessage]);
       }
-
-      socket.on("message", (sender, receiver, time, message, chat_id) => {
-        if (chat_id === selected.chat_id) {
-          setMessages((pre) => [
-            ...pre,
-            { content: message, timestamp: time, sender, receiver },
-          ]);
-        }
-      });
     }
-
-    if (userState) {
-      socket.on("message", (sender, receiver, time, message, chat_id) => {
-        if (selected?.chat_id !== chat_id) {
-          const updatedFriends = userState.friends.map((friend) => {
-            if (friend.id === receiver) {
-              // Create a new object with the updated online status
-              return { ...friend, unread: friend.unread + 1 };
-            }
-            return friend;
-          });
-          setUserState({ ...userState, friends: updatedFriends });
-        }
-      });
-    }
-    setInput("");
   };
 
   return (

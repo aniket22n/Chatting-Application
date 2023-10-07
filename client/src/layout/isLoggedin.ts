@@ -1,12 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-type SetLoginFunction = (data: any) => void;
 type SetUserStateFunction = (data: any) => void;
 type RedirectFunction = (path: string) => void;
 
 export const getResponse = async (
-  setLogin: SetLoginFunction,
   setUserState: SetUserStateFunction,
   redirect: RedirectFunction
 ) => {
@@ -15,8 +13,7 @@ export const getResponse = async (
       withCredentials: true,
     });
     if (response.status === 200) {
-      setUserState(response.data.loginResponse);
-      setLogin(true);
+      setUserState({ isLoggedin: true, info: response.data.response });
     }
   } catch (error: any) {
     const code = error.request.status;

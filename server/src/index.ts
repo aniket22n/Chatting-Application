@@ -9,15 +9,11 @@ import userRouter from "./controllers/user";
 import searchRouter from "./controllers/search";
 import addFriendRoute from "./controllers/addFriend";
 import messageRoute from "./controllers/messages";
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData,
-} from "./Types/socket";
+import { ClientToServerEvents, ServerToClientEvents } from "./Types/socket";
 import { Chat, User } from "./db/models";
 import { getFriendsSocketIds, updateUserSocketInfo } from "./socketUtils";
 import { chatMessageType } from "./Types/zod";
+
 // ************ instance of express and mounts *******************
 
 const app = express();
@@ -38,12 +34,7 @@ app.use(messageRoute);
 // *************** mount socket server on top of http *****************
 
 const server = http.createServer(app);
-const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->(server, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
     origin: "http://localhost:5173",
   },
@@ -52,6 +43,7 @@ const io = new Server<
 // ******************** socket operations *************************
 
 let connectedSockets: string[] = [];
+
 io.on("connection", async (socket) => {
   const user_id = socket.handshake.query["user_id"];
 
@@ -79,12 +71,16 @@ io.on("connection", async (socket) => {
         receiver: receiver,
       };
 
+      // store newMessage in chatHistory and increment unread by 1
       const chat = await Chat.findByIdAndUpdate(chat_id, {
         $push: { messages: newMessage },
+        $inc: { unread: 1 },
       });
 
       if (sender != receiver) {
         const getReceiver = await User.findById(receiver).select("socket_id");
+
+        // emit message to receiver, if receiver online
         if (getReceiver) {
           if (connectedSockets.includes(getReceiver.socket_id)) {
             io.to(getReceiver.socket_id).emit(
@@ -98,6 +94,15 @@ io.on("connection", async (socket) => {
           }
         }
       }
+    });
+
+    // *********** update unread if message is read by receiver *****************
+    socket.on("read", async (chat_id) => {
+      const updatedChat = await Chat.findByIdAndUpdate(
+        chat_id,
+        { $set: { unread: 0 } },
+        { new: true }
+      );
     });
 
     socket.on("disconnect", async () => {

@@ -4,10 +4,10 @@ import { CaretDown } from "phosphor-react";
 import { useRecoilValue } from "recoil";
 
 import { StyledBadge } from "../../components/StyledBadge";
-import { selectedChat } from "../../store/atoms/selectedChat";
+import { appState } from "../../store/atoms/appStateAtom";
 
 const Header = () => {
-  const selected = useRecoilValue(selectedChat);
+  const appSetting = useRecoilValue(appState);
   const theme = useTheme();
   return (
     <Box
@@ -28,20 +28,22 @@ const Header = () => {
         <Stack direction={"row"} spacing={2} alignItems={"center"}>
           <StyledBadge
             overlap="circular"
-            invisible={!selected?.online}
+            invisible={!appSetting.selectedChat?.online}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             variant="dot"
           >
             <Avatar
-              src={selected?.image}
+              src={appSetting.selectedChat?.image}
               alt={"user image"}
               sx={{ border: `solid ${theme.palette.text.primary} 1px` }}
             />
           </StyledBadge>
           <Stack>
-            <Typography variant="subtitle1">{selected?.username}</Typography>
+            <Typography variant="subtitle1">
+              {appSetting.selectedChat?.username}
+            </Typography>
             <Typography variant="caption">
-              {selected?.online ? "online" : "offline"}
+              {appSetting.selectedChat?.online ? "online" : "offline"}
             </Typography>
           </Stack>
         </Stack>

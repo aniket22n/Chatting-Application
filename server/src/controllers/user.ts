@@ -8,7 +8,7 @@ import {
   loginResponseType,
   friendsType,
 } from "../Types/zod";
-import { User } from "../db/models";
+import { Chat, User } from "../db/models";
 import { auth } from "../middlewares/authenticate";
 require("dotenv").config("../../.env");
 
@@ -105,15 +105,23 @@ async function getResponse(
     const friends: friendsType[] = (
       await Promise.all(
         isUser.friends.map(async (id) => {
+          // get user info
           const friend = await User.findOne({ _id: id.friend_id });
-          if (friend) {
+
+          // get unread messages count, last message and last message time
+          const chat = await Chat.findById(id.chat_id);
+
+          if (friend && chat) {
+            const lastMessage = chat.messages[chat.messages.length - 1];
             return {
               username: friend.username,
               image: friend.image,
               online: friend.online,
-              unread: friend.unread,
               id: friend._id,
               chat_id: id.chat_id,
+              msg: lastMessage?.content || "say hello...",
+              unread: chat.unread,
+              time: lastMessage?.timestamp || 0,
             };
           }
         })

@@ -9,9 +9,6 @@ export interface ServerToClientEvents {
     message: string,
     chat_id: mongoose.Types.ObjectId
   ) => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: String) => void) => void;
-  msg: (message: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -23,13 +20,5 @@ export interface ClientToServerEvents {
     message: string,
     chat_id: mongoose.Types.ObjectId
   ) => void;
-}
-
-export interface InterServerEvents {
-  ping: () => void;
-}
-
-export interface SocketData {
-  name: string;
-  age: number;
+  read: (chatId: mongoose.Types.ObjectId) => void;
 }

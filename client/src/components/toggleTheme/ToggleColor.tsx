@@ -5,9 +5,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import { CaretDown, CheckCircle, Circle } from "phosphor-react";
 import { IconButton, Stack, Typography } from "@mui/material";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
-import { toggleColor } from "../../store/atoms/toggleTheme";
+import { themeState, Color } from "../../store/atoms/themeAtom";
 import ToggleTheme from "./ToggleTheme";
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -54,8 +54,7 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 export default function ToggleColor() {
-  const setColor = useSetRecoilState(toggleColor);
-  const color = useRecoilValue(toggleColor);
+  const [theme, setTheme] = useRecoilState(themeState);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -94,22 +93,26 @@ export default function ToggleColor() {
           </Typography>
           <Stack direction={"row"} spacing={4}>
             <IconButton
-              sx={{ bgcolor: "#0162C4" }}
-              onClick={() => setColor("#0162C4")}
+              sx={{ bgcolor: Color.Blue }}
+              onClick={() =>
+                setTheme({ color: Color.Blue, theme: theme.theme })
+              }
             >
-              {color == "#0162C4" ? <CheckCircle /> : <Circle />}
+              {theme.color == "#0162C4" ? <CheckCircle /> : <Circle />}
             </IconButton>
             <IconButton
-              sx={{ bgcolor: "#B78103" }}
-              onClick={() => setColor("#B78103")}
+              sx={{ bgcolor: Color.Yellow }}
+              onClick={() =>
+                setTheme({ color: Color.Yellow, theme: theme.theme })
+              }
             >
-              {color == "#B78103" ? <CheckCircle /> : <Circle />}
+              {theme.color == "#B78103" ? <CheckCircle /> : <Circle />}
             </IconButton>
             <IconButton
-              sx={{ bgcolor: "#FF4842" }}
-              onClick={() => setColor("#FF4842")}
+              sx={{ bgcolor: Color.Red }}
+              onClick={() => setTheme({ color: Color.Red, theme: theme.theme })}
             >
-              {color == "#FF4842" ? <CheckCircle /> : <Circle />}
+              {theme.color == "#FF4842" ? <CheckCircle /> : <Circle />}
             </IconButton>
           </Stack>
         </MenuItem>

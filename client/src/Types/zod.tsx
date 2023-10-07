@@ -14,7 +14,6 @@ export const registerSchemaZod = z.object({
     .email({ message: "Invalid email format" }),
   image: z.string(), //  Base64 format
   online: z.boolean().default(false),
-  unread: z.number().default(0),
   friends: z.array(
     z.object({
       friend_id: z.custom<mongoose.Types.ObjectId>(),
@@ -54,6 +53,8 @@ export const friends = z.object({
   online: z.boolean().default(false),
   unread: z.number().default(0),
   chat_id: z.custom<mongoose.Types.ObjectId>(),
+  msg: z.string(),
+  time: z.number(),
 });
 export type friendsType = z.infer<typeof friends>;
 
@@ -73,7 +74,6 @@ export const loginResponseZod = z.object({
 export type loginResponseType = z.infer<typeof loginResponseZod>;
 
 //****************** message ******************
-
 export const chatParticipantSchema = z.object({
   user: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
 });
@@ -85,13 +85,18 @@ export const chatMessageSchema = z.object({
   receiver: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
 });
 
-export type chatMessagesType = z.infer<typeof chatMessageSchema>;
+export type chatMessageType = z.infer<typeof chatMessageSchema>;
 
 export const chatSchemaZod = z.object({
   participants: z
     .array(chatParticipantSchema)
     .min(2, { message: "At least 2 participants are required" }),
+  unread: z.number().default(0),
   messages: z.array(chatMessageSchema),
+});
+
+export const messageRequestSchema = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
 });
 
 //****************** search username ******************

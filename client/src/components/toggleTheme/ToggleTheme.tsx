@@ -1,8 +1,8 @@
 import { FormControlLabel, Switch } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
-import { toggleTheme } from "../../store/atoms/toggleTheme";
+import { themeState, Theme } from "../../store/atoms/themeAtom";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -52,7 +52,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const ToggleTheme = () => {
-  const setTheme = useSetRecoilState(toggleTheme);
+  const [theme, setTheme] = useRecoilState(themeState);
 
   return (
     <>
@@ -61,7 +61,12 @@ const ToggleTheme = () => {
         id="darkTheme"
         control={<MaterialUISwitch sx={{ m: 1 }} />}
         label={""}
-        onChange={() => setTheme((pre) => (pre == "dark" ? "light" : "dark"))}
+        onChange={() =>
+          setTheme({
+            theme: theme.theme === Theme.Dark ? Theme.Light : Theme.Dark,
+            color: theme.color,
+          })
+        }
       />
     </>
   );

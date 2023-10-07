@@ -7,34 +7,33 @@ import { CssBaseline, PaletteOptions } from "@mui/material";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import { toggleColor, toggleTheme } from "./store/atoms/toggleTheme";
+import { themeState } from "./store/atoms/themeAtom";
 import palette from "./theme/palette";
 import Layout from "./layout";
 
 // ........................ Theme & Routing .........................
 
 function App() {
-  const mode = useRecoilValue(toggleTheme);
-  const color = useRecoilValue(toggleColor);
+  const { theme, color } = useRecoilValue(themeState);
 
-  const theme = React.useMemo(
+  const customTheme = React.useMemo(
     () =>
       createTheme({
         palette:
-          mode == "light"
+          theme == "light"
             ? (palette.light as PaletteOptions)
             : (palette.dark as PaletteOptions),
       }),
-    [mode]
+    [theme]
   );
 
   useMemo(() => {
-    theme.palette.primary.main = color;
-  }, [color, mode]);
+    customTheme.palette.primary.main = color;
+  }, [theme, color]);
 
   return (
     <div>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={customTheme}>
         <CssBaseline />
         <ToastContainer />
         <Routes>

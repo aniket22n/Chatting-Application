@@ -1,20 +1,20 @@
 import { Stack, Box, Typography } from "@mui/material";
+import { useRecoilValue } from "recoil";
 
 import Header from "./Header";
 import Footer from "./Footer";
 import Messages from "./Messages";
-import { useRecoilValue } from "recoil";
-import { openDrawer } from "../../store/atoms/drawer";
-import { selectedChat } from "../../store/atoms/selectedChat";
+import { appState } from "../../store/atoms/appStateAtom";
 
 const Chat = () => {
-  const isOpen = useRecoilValue(openDrawer);
-  const chat = useRecoilValue(selectedChat);
+  const { isDrawerOpen, selectedChat } = useRecoilValue(appState);
 
-  if (!chat) {
+  if (!selectedChat) {
     return (
       <center>
-        <Box display={window.innerWidth < 500 && isOpen ? "none" : "block"}>
+        <Box
+          display={window.innerWidth < 500 && isDrawerOpen ? "none" : "block"}
+        >
           <Typography variant="h2">Select chat</Typography>
         </Box>
       </center>
@@ -25,7 +25,7 @@ const Chat = () => {
       sx={{
         width: "100%",
         height: "calc(100vh - 80px)",
-        display: window.innerWidth < 500 && isOpen ? "none" : "block",
+        display: window.innerWidth < 500 && isDrawerOpen ? "none" : "block",
       }}
     >
       <Stack>

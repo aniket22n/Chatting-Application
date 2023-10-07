@@ -17,11 +17,20 @@ router.put("/addUser", auth, async (req, res) => {
   // ****** Generate chat id **************
   const newChat = new Chat({
     participants: [connect_to.data.id, req.headers["id"]],
+    unread: 1,
+    messages: [
+      {
+        content: "Hello there...",
+        sender: req.headers["id"],
+        receiver: connect_to.data.id,
+        timestamp: Date.now(),
+      },
+    ],
   });
   const chat = await newChat.save();
 
   // ****** friend id added to friends array
-  await User.updateOne(
+  const updated_this_user = await User.updateOne(
     { _id: req.headers["id"] },
     {
       $push: {
@@ -32,7 +41,7 @@ router.put("/addUser", auth, async (req, res) => {
 
   if (req.headers["id"]?.toString() !== connect_to.data.id.toString()) {
     // ***** your id added to friend's friends array
-    await User.updateOne(
+    const updated_friend = await User.updateOne(
       { _id: connect_to.data.id },
       {
         $push: {
@@ -50,9 +59,12 @@ router.put("/addUser", auth, async (req, res) => {
       id: friend._id,
       image: friend.image,
       online: friend.online,
-      unread: friend.unread,
+      unread: 0,
       chat_id: chat._id,
+      msg: "Hello there...",
+      time: Date.now(),
     };
+
     return res.status(200).json({
       message: `${friend.username} is added to chat list`,
       addUserResponse: response,

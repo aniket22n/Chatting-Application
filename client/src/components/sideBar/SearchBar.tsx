@@ -1,7 +1,9 @@
 import { InputBase, alpha } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useRecoilState } from "recoil";
-import { searchUser } from "../../store/atoms/search";
+import { searchState } from "../../store/atoms/searchAtom";
+
+// style for search component
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -31,14 +33,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const SearchBar = () => {
-  const [username, setUsername] = useRecoilState(searchUser);
+  const [search, setSearch] = useRecoilState(searchState);
   return (
     <Search>
       <StyledInputBase
         placeholder="Enter username.."
-        value={username}
+        value={search.input}
         inputProps={{ "aria-label": "search" }}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) =>
+          setSearch({ input: e.target.value, response: search.response })
+        }
       />
     </Search>
   );

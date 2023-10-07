@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../style/auth.css";
 import { loginType } from "../../Types/zod";
 import { useSetRecoilState } from "recoil";
-import { isLoggedin, user } from "../../store/atoms/user";
+import { userState } from "../../store/atoms/userAtom";
 
 const textFieldStyle = {
   style: {
@@ -20,11 +20,11 @@ const textFieldStyle = {
 
 export default function Login() {
   const redirect = useNavigate();
-  const setUser = useSetRecoilState(user);
-  const setLogin = useSetRecoilState(isLoggedin);
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const setUser = useSetRecoilState(userState);
 
   const handleLogin = async () => {
     if (username.length < 1) toast.error("Enter username");
@@ -41,8 +41,7 @@ export default function Login() {
         );
         if (response.status == 200) {
           toast.success(response.data.message);
-          setUser(response.data.loginResponse);
-          setLogin(true);
+          setUser({ isLoggedin: true, info: response.data.response });
           redirect("/");
         }
       } catch (error: any) {
