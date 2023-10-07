@@ -14,7 +14,7 @@ import { socket } from "../socket";
 import { userState } from "../../store/atoms/userAtom";
 import { appState } from "../../store/atoms/appStateAtom";
 import { chatHistory } from "../../store/atoms/messageState";
-import { chatMessagesType } from "../../Types/zod";
+import { chatMessageType } from "../../Types/zod";
 
 const StyledInput = styled(TextField)(({}) => ({
   "& .MuiInputBase-input": {
@@ -35,7 +35,7 @@ const Footer = () => {
 
     if (user.info && appSettings.selectedChat) {
       if (input.trim()) {
-        const newMessage: chatMessagesType = {
+        const newMessage: chatMessageType = {
           content: input.trim(),
           timestamp: time,
           sender: user.info.id,

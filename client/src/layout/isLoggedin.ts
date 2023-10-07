@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 type SetUserStateFunction = (data: any) => void;
 type RedirectFunction = (path: string) => void;
 
-export const getResponse = async (
+export const isLoggedin = async (
   setUserState: SetUserStateFunction,
   redirect: RedirectFunction
 ) => {
@@ -19,7 +19,9 @@ export const getResponse = async (
     const code = error.request.status;
     if (code == 401) {
       toast.warning("Please login", { position: "top-center" });
-      redirect("/login");
-    } else toast.warning("Server down", { position: "top-center" });
+    } else {
+      toast.warning("Server down", { position: "top-center" });
+    }
+    redirect("/login");
   }
 };

@@ -1,25 +1,14 @@
-import {
-  Box,
-  Stack,
-  Avatar,
-  IconButton,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Box, Stack, IconButton, Typography, Divider } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ChatCircleDots, List, Users } from "phosphor-react";
 import { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
-// import darkLogo from "../../assets/logo/dark-logo.png";
-// import lightLogo from "../../assets/logo/light-logo.png";
-import ToggleTheme from "../../components/toggleTheme/ToggleTheme";
-import ToggleColor from "../../components/toggleTheme/ToggleColor";
+import Theme from "../../components/toggleTheme/Theme";
 import { appState } from "../../store/atoms/appStateAtom";
-import { userState } from "../../store/atoms/userAtom";
+import UserProfile from "./UserProfile";
 
 const TopBar = () => {
-  const user = useRecoilValue(userState);
   const theme = useTheme();
 
   return (
@@ -50,10 +39,7 @@ const TopBar = () => {
           <NavButtons />
         </Stack>
 
-        <Avatar
-          sx={{ border: `solid ${theme.palette.text.primary} 1px` }}
-          src={user.info?.image}
-        />
+        <UserProfile />
       </Stack>
     </Box>
   );
@@ -142,31 +128,10 @@ const NavButtons = () => {
         orientation="vertical"
         sx={{ height: "48px", bgcolor: theme.palette.text.secondary }}
       />
-      <ToggleColor />
-      {window.innerWidth > 900 && <ToggleTheme />}
+      {/* From toggle Theme component */}
+      <Theme />
     </Stack>
   );
 };
 
-//............. Logo ....................
-
-// const Logo = () => {
-//   const theme = useTheme();
-//   return (
-//     <Stack
-//       p={1.2}
-//       sx={{
-//         bgcolor: theme.palette.primary.main,
-//         borderRadius: "50%",
-//         boxShadow: "0px 0px 6px 0px rgba(0, 0, 0, 0.50)",
-//       }}
-//     >
-//       <img
-//         src={theme.palette.mode == "light" ? lightLogo : darkLogo}
-//         height={"50px"}
-//         width={"50px"}
-//       />
-//     </Stack>
-//   );
-// };
 export default TopBar;

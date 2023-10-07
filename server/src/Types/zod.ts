@@ -126,3 +126,9 @@ export type searchResponseType = z.infer<typeof searchResponseSchema>;
 export const addUserSchemaZod = z.object({
   id: z.custom<mongoose.Types.ObjectId>(),
 });
+
+// ******************* delete chat *******************
+
+export const DeleteChat = z.object({
+  chat_id: z.custom<mongoose.Types.ObjectId>(),
+});

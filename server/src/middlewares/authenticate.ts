@@ -5,7 +5,9 @@ require("dotenv").config("../../.env");
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
   if (req.cookies["token"] == undefined) {
-    return res.json({ message: "Unauthorized, please login or signup" });
+    return res
+      .status(401)
+      .json({ message: "Unauthorized, please login or signup" });
   }
 
   const token: string = req.cookies["token"];

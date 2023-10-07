@@ -1,11 +1,11 @@
-import { Card, TextField, Button, Typography, Grid } from "@mui/material";
+import { Card, TextField, Button, Typography, Grid, Box } from "@mui/material";
 import { AccountCircle, Fingerprint } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { toast } from "react-toastify";
 import axios from "axios";
-import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "@mui/material/styles";
 
 import "../../style/auth.css";
 import { loginType } from "../../Types/zod";
@@ -19,6 +19,7 @@ const textFieldStyle = {
 };
 
 export default function Login() {
+  const theme = useTheme();
   const redirect = useNavigate();
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
@@ -62,10 +63,14 @@ export default function Login() {
           </Helmet>
         </HelmetProvider>
 
-        <Card className="login-card" elevation={24}>
+        <Card
+          className="login-card"
+          elevation={6}
+          sx={{ bgcolor: theme.palette.grey[900] }}
+        >
           <img className="image-login" src={"welcome.gif"} />
 
-          <div className="login-form">
+          <Box className="login-form">
             <Typography className="title">Member Login</Typography>
             <TextField
               className="text-field"
@@ -79,6 +84,7 @@ export default function Login() {
             />
             <TextField
               className="text-field"
+              autoComplete="off"
               placeholder="Password"
               type={show ? "text" : "password"}
               InputProps={{
@@ -92,13 +98,20 @@ export default function Login() {
               }}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button className="button" onClick={handleLogin}>
+            <Button
+              className="button"
+              variant="contained"
+              onClick={handleLogin}
+            >
               Login
             </Button>
-            <div className="register-link">
-              Not a member yet? <Link to={"/register"}>register here</Link>
-            </div>
-          </div>
+            <Box className="register-link">
+              Not a member yet?{" "}
+              <Link style={{ color: "skyblue" }} to={"/register"}>
+                register here
+              </Link>
+            </Box>
+          </Box>
         </Card>
       </Grid>
     </Grid>

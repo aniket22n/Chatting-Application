@@ -1,7 +1,7 @@
 import express from "express";
 
 import { auth } from "../middlewares/authenticate";
-import { messageRequestSchema } from "../Types/zod";
+import { DeleteChat, messageRequestSchema } from "../Types/zod";
 import { Chat } from "../db/models";
 import mongoose from "mongoose";
 
@@ -32,4 +32,22 @@ router.get("/chatHistory", auth, async (req, res) => {
   }
 });
 
+router.delete("/deleteChatHistroy", auth, async (req, res) => {
+  const chat_id = DeleteChat.safeParse(req.query["chat_id"]);
+  if (
+    !chat_id.success ||
+    !mongoose.Types.ObjectId.isValid(chat_id.data.chat_id)
+  ) {
+    return res.status(400).json({ message: "Invalid data" });
+  }
+
+  try {
+    const chat = await Chat.findByIdAndUpdate(chat_id.data.chat_id, {
+      $set: { messages: [] },
+    });
+    return res.status(200).json({ message: "Success!" });
+  } catch (error: any) {
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 export default router;

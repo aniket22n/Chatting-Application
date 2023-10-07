@@ -12,7 +12,7 @@ import GroupChat from "./sideBar/GroupChat";
 import { appState } from "../store/atoms/appStateAtom";
 import { userState } from "../store/atoms/userAtom";
 import { Main } from "../components/customDrawer";
-import { getResponse } from "./isLoggedin";
+import { isLoggedin } from "./isLoggedin";
 import { chatHistory } from "../store/atoms/messageState";
 
 const Layout = () => {
@@ -25,7 +25,7 @@ const Layout = () => {
 
   // *************** check if user loggedin **************
   useEffect(() => {
-    getResponse(setUser, redirect);
+    isLoggedin(setUser, redirect);
   }, []);
 
   // ************************* socket operations *************************
@@ -95,7 +95,7 @@ const Layout = () => {
         }
       });
 
-      // Define the cleanup function to remove event listeners
+      // Defined the cleanup function to remove event listeners
       cleanupFunction = () => {
         socket.off("online"); // Remove the "online" event listener
         socket.off("message"); // Remove the "message" event listener

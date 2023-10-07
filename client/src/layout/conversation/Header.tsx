@@ -1,14 +1,16 @@
-import { Stack, Box, Avatar, Typography, IconButton } from "@mui/material";
+import { Stack, Box, Avatar, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CaretDown } from "phosphor-react";
 import { useRecoilValue } from "recoil";
 
 import { StyledBadge } from "../../components/StyledBadge";
 import { appState } from "../../store/atoms/appStateAtom";
+import HeaderMenu from "./HeaderMenu";
 
 const Header = () => {
   const appSetting = useRecoilValue(appState);
+
   const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -47,10 +49,7 @@ const Header = () => {
             </Typography>
           </Stack>
         </Stack>
-
-        <IconButton>
-          <CaretDown />
-        </IconButton>
+        <HeaderMenu />
       </Stack>
     </Box>
   );

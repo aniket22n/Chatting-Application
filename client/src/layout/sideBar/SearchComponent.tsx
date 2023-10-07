@@ -48,12 +48,13 @@ function SearchComponent() {
       const code = error.request.status;
       let message;
       if (code == 404) message = "user dosen't exists";
-      else if (code == 500) message = "server error";
+      else message = "server error";
       toast.info(message, {
         position: "top-center",
         pauseOnFocusLoss: false,
         pauseOnHover: false,
       });
+      setSearch({ input: "", response: search.response });
     }
   };
 

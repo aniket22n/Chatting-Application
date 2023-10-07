@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, PaletteOptions } from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";

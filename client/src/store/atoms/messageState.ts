@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import { chatMessagesType } from "../../Types/zod";
+import { chatMessageType } from "../../Types/zod";
 
-export const chatHistory = atom<chatMessagesType[]>({
+export const chatHistory = atom<chatMessageType[]>({
   key: "messageState",
   default: [],
 });

@@ -86,6 +86,17 @@ router.post("/login", async (req, res) => {
   });
 });
 
+// ***************************** logout route ************************************
+router.get("/logout", auth, (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    maxAge: 0, //valid for 7 days (milliseconds)
+    sameSite: "lax",
+    secure: false,
+  });
+  return res.status(200).json({ message: "Successfully logged out!" });
+});
+
 // ***************************** isLoggedin route ************************************
 router.get("/isLoggedin", auth, async (req, res) => {
   const username = req.headers["username"];

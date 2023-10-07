@@ -1,4 +1,5 @@
 import { Card, TextField, Button, Grid } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import {
   AccountCircle,
   AlternateEmail,
@@ -9,7 +10,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import { registerType } from "../../Types/zod";
 import "../../style/auth.css";
@@ -58,6 +58,7 @@ function isValidEmail(email: string) {
 }
 
 export default function Register() {
+  const theme = useTheme();
   const redirect = useNavigate();
   const [show, setShow] = useState({ pass: false, cPass: false });
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -95,7 +96,6 @@ export default function Register() {
           image: selectedImage || (gooseImage as string),
           password: state.password,
           online: false,
-          unread: 0,
           friends: [],
         };
         // Make a registration request to the server
@@ -131,12 +131,13 @@ export default function Register() {
 
         <Card
           className="login-card"
-          elevation={24}
+          elevation={6}
           sx={{
             height: "100%",
             display: "flex",
             direction: "column",
             alignItems: "center",
+            bgcolor: theme.palette.grey[900],
           }}
         >
           <div className="login-form">
@@ -182,7 +183,7 @@ export default function Register() {
 
             <TextField
               className="text-field"
-              placeholder="Password ( at least 4 characters )"
+              placeholder="Password"
               color={state.password.length < 4 ? "error" : "success"}
               type={show.pass ? "text" : "password"}
               InputProps={{
@@ -242,6 +243,7 @@ export default function Register() {
 
             <Button
               className="button"
+              variant="contained"
               onClick={handleRegister}
               sx={{ marginTop: "20px" }}
             >
@@ -249,7 +251,10 @@ export default function Register() {
             </Button>
 
             <div className="register-link">
-              Already a member? <Link to={"/Login"}>login here</Link>
+              Already a member?{" "}
+              <Link style={{ color: "skyblue" }} to={"/Login"}>
+                login here
+              </Link>
             </div>
           </div>
         </Card>
