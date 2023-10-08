@@ -80,7 +80,7 @@ export const chatParticipantSchema = z.object({
 
 export const chatMessageSchema = z.object({
   content: z.string().min(1, { message: "Message content is required" }),
-  timestamp: z.number().default(Date.now()),
+  timestamp: z.number().default(0),
   sender: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
   receiver: z.custom<mongoose.Types.ObjectId>(), // Mongoose ObjectId
 });

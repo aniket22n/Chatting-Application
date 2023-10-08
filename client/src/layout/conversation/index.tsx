@@ -13,6 +13,7 @@ const Chat = () => {
     return (
       <center>
         <Box
+          minWidth="300px"
           display={window.innerWidth < 500 && isDrawerOpen ? "none" : "block"}
         >
           <Typography variant="h2">Select chat</Typography>
@@ -23,6 +24,7 @@ const Chat = () => {
   return (
     <Box
       sx={{
+        minWidth: "300px",
         width: "100%",
         height: "calc(100vh - 80px)",
         display: window.innerWidth < 500 && isDrawerOpen ? "none" : "block",

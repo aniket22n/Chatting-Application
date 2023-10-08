@@ -1,12 +1,13 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 
 type SetUserStateFunction = (data: any) => void;
 type RedirectFunction = (path: string) => void;
+type WarningToast = (message: string) => void;
 
 export const isLoggedin = async (
   setUserState: SetUserStateFunction,
-  redirect: RedirectFunction
+  redirect: RedirectFunction,
+  warningToast: WarningToast
 ) => {
   try {
     const response = await axios.get("http://localhost:3000/isLoggedin", {
@@ -18,9 +19,9 @@ export const isLoggedin = async (
   } catch (error: any) {
     const code = error.request.status;
     if (code == 401) {
-      toast.warning("Please login", { position: "top-center" });
+      warningToast("Please login");
     } else {
-      toast.warning("Server down", { position: "top-center" });
+      warningToast("Server down");
     }
     redirect("/login");
   }

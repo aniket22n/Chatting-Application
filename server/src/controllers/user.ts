@@ -123,16 +123,24 @@ async function getResponse(
           const chat = await Chat.findById(id.chat_id);
 
           if (friend && chat) {
-            const lastMessage = chat.messages[chat.messages.length - 1];
+            let msg = "say hello...";
+            let time = 0;
+            let unread = 0;
+            if (chat.messages.length !== 0) {
+              const lastMessage = chat.messages[chat.messages.length - 1];
+              msg = lastMessage.content;
+              time = lastMessage.timestamp;
+              if (!lastMessage.sender.equals(isUser._id)) unread = chat.unread;
+            }
             return {
               username: friend.username,
               image: friend.image,
               online: friend.online,
               id: friend._id,
               chat_id: id.chat_id,
-              msg: lastMessage?.content || "say hello...",
-              unread: chat.unread,
-              time: lastMessage?.timestamp || 0,
+              msg: msg,
+              unread: unread,
+              time: time,
             };
           }
         })

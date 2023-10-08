@@ -5,8 +5,15 @@ import { friendsType } from "../../Types/zod";
 export const friends = selector<friendsType[]>({
   key: "ThisIsFriendsSelectorKey",
   get: ({ get }) => {
-    const user = get(userState);
-    if (user.info) return user.info.friends;
+    let user = get(userState);
+    if (user.info) {
+      // sort array of friends based on time property
+      const sortedFriends = [...user.info.friends].sort(
+        (e1, e2) => e2.time - e1.time
+      );
+      return sortedFriends;
+    }
+
     return [];
   },
 });

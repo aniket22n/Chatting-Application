@@ -37,7 +37,7 @@ const SearchBar = () => {
   return (
     <Search>
       <StyledInputBase
-        placeholder="Enter username.."
+        placeholder="Search username.."
         value={search.input}
         inputProps={{ "aria-label": "search" }}
         onChange={(e) =>

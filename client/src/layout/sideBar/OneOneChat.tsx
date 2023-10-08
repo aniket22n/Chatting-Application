@@ -195,7 +195,11 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
             </Typography>
           </Stack>
         </Stack>
-        <Stack spacing={2} alignItems={"center"}>
+        <Stack
+          spacing={2}
+          alignItems={"center"}
+          display={Input.time ? "box" : "none"}
+        >
           <Typography variant="caption">{formatTime(Input.time)}</Typography>
           <Badge color="primary" badgeContent={Input.unread} />
         </Stack>

@@ -28,7 +28,7 @@ const Footer = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useRecoilState(chatHistory);
   const appSettings = useRecoilValue(appState);
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
 
   const handleSendMessage = () => {
     const time = Date.now();
@@ -43,6 +43,13 @@ const Footer = () => {
         };
 
         setMessages([...messages, newMessage]);
+        const updatedFriends = user.info.friends.map((friend) => {
+          if (friend.chat_id === appSettings.selectedChat?.chat_id) {
+            return { ...friend, time: time, msg: input };
+          }
+          return friend;
+        });
+        setUser({ ...user, info: { ...user.info, friends: updatedFriends } });
         setInput("");
 
         socket.emit(

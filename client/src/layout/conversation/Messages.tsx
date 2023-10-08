@@ -1,6 +1,6 @@
 import { useTheme } from "@mui/material/styles";
 import SimpleBar from "simplebar-react";
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Grid } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useRecoilValue } from "recoil";
 
@@ -39,44 +39,53 @@ const Messages = () => {
               spacing={1}
               sx={{ pt: 2, pl: 2, pr: 2 }}
             >
-              {userState && el.sender != user.info?.id && (
-                <Stack
-                  direction={"row"}
-                  alignItems={"end"}
-                  spacing={1}
-                  maxWidth="100%"
-                >
-                  <Box
-                    sx={{
-                      p: 1.5,
-                      bgcolor: theme.palette.grey[500],
-                      color: "#000",
-                      borderRadius: "0px 20px 20px 20px",
-                    }}
-                  >
-                    {el.content}
-                  </Box>
-                  <Box sx={{ fontSize: "14px" }}>
-                    {formatTime(el.timestamp)}
-                  </Box>
-                </Stack>
+              {el.sender != user.info?.id && (
+                <Grid container>
+                  <Grid item xs={10} md={8}>
+                    <Stack
+                      direction={"row"}
+                      alignItems={"end"}
+                      spacing={1}
+                      maxWidth="100%"
+                    >
+                      <Box
+                        sx={{
+                          p: 1.5,
+                          bgcolor: theme.palette.grey[500],
+                          color: "#000",
+                          borderRadius: "0px 20px 20px 20px",
+                        }}
+                      >
+                        {el.content}
+                      </Box>
+                      <Box sx={{ fontSize: "14px" }}>
+                        {formatTime(el.timestamp)}
+                      </Box>
+                    </Stack>
+                  </Grid>
+                </Grid>
               )}
-              {userState && el.sender == user.info?.id && (
-                <Stack alignItems={"end"} maxWidth="100%">
-                  <Box
-                    sx={{
-                      p: 1.5,
-                      bgcolor: "#0162C4",
-                      color: "#fff",
-                      borderRadius: "20px 0px 20px 20px",
-                    }}
-                  >
-                    {el.content}
-                  </Box>
-                  <Box sx={{ fontSize: "14px" }}>
-                    {formatTime(el.timestamp)}
-                  </Box>
-                </Stack>
+              {el.sender == user.info?.id && (
+                <Grid container>
+                  <Grid item xs={2} md={4}></Grid>
+                  <Grid item xs={10} md={8}>
+                    <Stack alignItems={"end"} maxWidth="100%">
+                      <Box
+                        sx={{
+                          p: 1.5,
+                          bgcolor: "#0162C4",
+                          color: "#fff",
+                          borderRadius: "20px 0px 20px 20px",
+                        }}
+                      >
+                        {el.content}
+                      </Box>
+                      <Box sx={{ fontSize: "14px" }}>
+                        {formatTime(el.timestamp)}
+                      </Box>
+                    </Stack>
+                  </Grid>
+                </Grid>
               )}
             </Stack>
           );

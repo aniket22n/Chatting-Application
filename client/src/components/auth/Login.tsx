@@ -3,7 +3,6 @@ import { AccountCircle, Fingerprint } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { toast } from "react-toastify";
 import axios from "axios";
 import { useTheme } from "@mui/material/styles";
 
@@ -11,6 +10,7 @@ import "../../style/auth.css";
 import { loginType } from "../../Types/zod";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../../store/atoms/userAtom";
+import useToast from "../../hooks/useToast";
 
 const textFieldStyle = {
   style: {
@@ -19,6 +19,7 @@ const textFieldStyle = {
 };
 
 export default function Login() {
+  const { errorToast, successToast, infoToast } = useToast();
   const theme = useTheme();
   const redirect = useNavigate();
   const [show, setShow] = useState(false);
@@ -28,8 +29,8 @@ export default function Login() {
   const setUser = useSetRecoilState(userState);
 
   const handleLogin = async () => {
-    if (username.length < 1) toast.error("Enter username");
-    else if (password.length < 1) toast.error("Enter password");
+    if (username.length < 1) errorToast("Enter username");
+    else if (password.length < 1) errorToast("Enter password");
     else {
       try {
         const loginData: loginType = { username, password };
@@ -41,15 +42,15 @@ export default function Login() {
           }
         );
         if (response.status == 200) {
-          toast.success(response.data.message);
+          successToast(response.data.message);
           setUser({ isLoggedin: true, info: response.data.response });
           redirect("/");
         }
       } catch (error: any) {
         const code = error.request.status;
-        if (code == 401) toast.error("Incorrect username or password");
-        else if (code == 404) toast.error("Username not found in our records");
-        else toast.info("Server problem");
+        if (code == 401) errorToast("Incorrect username or password");
+        else if (code == 404) errorToast("Username not found in our records");
+        else infoToast("Server problem");
       }
     }
   };
@@ -74,6 +75,7 @@ export default function Login() {
             <Typography className="title">Member Login</Typography>
             <TextField
               className="text-field"
+              autoComplete="off"
               placeholder="Username"
               type="text"
               InputProps={{
@@ -84,7 +86,6 @@ export default function Login() {
             />
             <TextField
               className="text-field"
-              autoComplete="off"
               placeholder="Password"
               type={show ? "text" : "password"}
               InputProps={{

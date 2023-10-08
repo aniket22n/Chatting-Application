@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import axios from "axios";
 import { useTheme } from "@mui/material/styles";
 import { MagnifyingGlass, UserPlus, X } from "phosphor-react";
@@ -10,19 +9,17 @@ import SearchBar from "../../components/sideBar/SearchBar";
 import { loginResponseType, searchType } from "../../Types/zod";
 import { friends } from "../../store/selectors/friends";
 import { userState } from "../../store/atoms/userAtom";
+import useToast from "../../hooks/useToast";
 
 // Search component
 function SearchComponent() {
   const theme = useTheme();
+  const { successToast, errorToast, infoToast } = useToast();
   const [search, setSearch] = useRecoilState(searchState);
 
   const handleSearch = async () => {
     if (typeof search.input !== "string" || search.input === "") {
-      return toast.error("Invalid or Empty search data", {
-        position: "top-center",
-        pauseOnFocusLoss: false,
-        pauseOnHover: false,
-      });
+      return errorToast("Invalid or Empty search data");
     }
     try {
       const userData: searchType = { username: search.input.trim() };
@@ -37,11 +34,7 @@ function SearchComponent() {
 
       // ************ Response****************
       if (response.status === 200) {
-        toast.success(response.data.message, {
-          position: "top-center",
-          pauseOnFocusLoss: false,
-          pauseOnHover: false,
-        });
+        successToast(response.data.message);
         setSearch({ input: "", response: response.data.response });
       }
     } catch (error: any) {
@@ -49,11 +42,7 @@ function SearchComponent() {
       let message;
       if (code == 404) message = "user dosen't exists";
       else message = "server error";
-      toast.info(message, {
-        position: "top-center",
-        pauseOnFocusLoss: false,
-        pauseOnHover: false,
-      });
+      infoToast(message);
       setSearch({ input: "", response: search.response });
     }
   };
@@ -73,6 +62,7 @@ function SearchComponent() {
       sx={{ width: "100%", height: "80px" }}
     >
       {/*SearchBar */}
+
       <SearchBar />
       <IconButton
         sx={{
@@ -89,6 +79,7 @@ function SearchComponent() {
 
 const DisplayUser = () => {
   const theme = useTheme();
+  const { successToast, errorToast } = useToast();
   const [search, setSearch] = useRecoilState(searchState);
   const friendsArray = useRecoilValue(friends);
   const [user, setUser] = useRecoilState(userState);
@@ -106,12 +97,7 @@ const DisplayUser = () => {
           }
         );
         if (response.status == 200) {
-          toast.success(`${search.response?.username} added to chat list`, {
-            theme: "dark",
-            position: "top-center",
-            pauseOnFocusLoss: false,
-            pauseOnHover: false,
-          });
+          successToast(`${search.response?.username} added to chat list`);
 
           setSearch({ input: "", response: null });
           if (user.info) {
@@ -126,11 +112,7 @@ const DisplayUser = () => {
           }
         }
       } catch (error: any) {
-        toast.error("Error", {
-          position: "top-center",
-          pauseOnFocusLoss: false,
-          pauseOnHover: false,
-        });
+        errorToast("Error");
       }
     }
   };

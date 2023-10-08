@@ -4,6 +4,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
+import useToast from "../hooks/useToast";
 import { connectSocket, socket } from "./socket";
 import TopBar from "./topBar/TopBar";
 import OneOneChat from "./sideBar/OneOneChat";
@@ -16,6 +17,7 @@ import { isLoggedin } from "./isLoggedin";
 import { chatHistory } from "../store/atoms/messageState";
 
 const Layout = () => {
+  const { warningToast } = useToast();
   const redirect = useNavigate();
   const theme = useTheme();
 
@@ -25,7 +27,7 @@ const Layout = () => {
 
   // *************** check if user loggedin **************
   useEffect(() => {
-    isLoggedin(setUser, redirect);
+    isLoggedin(setUser, redirect, warningToast);
   }, []);
 
   // ************************* socket operations *************************

@@ -9,11 +9,11 @@ import { useState, useReducer } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 import { registerType } from "../../Types/zod";
 import "../../style/auth.css";
 import gooseImage from "../../assets/logo/light-logo.png";
+import useToast from "../../hooks/useToast";
 
 const textFieldStyle = {
   style: {
@@ -58,6 +58,7 @@ function isValidEmail(email: string) {
 }
 
 export default function Register() {
+  const { errorToast, successToast, warningToast, infoToast } = useToast();
   const theme = useTheme();
   const redirect = useNavigate();
   const [show, setShow] = useState({ pass: false, cPass: false });
@@ -80,13 +81,13 @@ export default function Register() {
   const handleRegister = async () => {
     // Validation Section
     if (state.username.length < 1) {
-      toast.error("Enter username");
+      errorToast("Enter username");
     } else if (!isValidEmail(state.email)) {
-      toast.error("Invalid email format");
+      errorToast("Invalid email format");
     } else if (state.password.length < 4) {
-      toast.error("Minimum password length: 4 characters");
+      errorToast("Minimum password length: 4 characters");
     } else if (state.password !== state.confirmPassword) {
-      toast.error("Password mismatch");
+      errorToast("Password mismatch");
     } else {
       try {
         // User Input
@@ -107,15 +108,15 @@ export default function Register() {
 
         if (response.status === 200) {
           // Successful registration
-          toast.success(response.data.message);
+          successToast(response.data.message);
           redirect("/login");
         }
       } catch (error: any) {
         // Handle different error cases
         const code = error.request.status;
-        if (code === 400) toast.warning("Username is already taken");
-        else if (code === 401) toast.error("Invalid crededentials");
-        else toast.info("Server problem");
+        if (code === 400) warningToast("Username is already taken");
+        else if (code === 401) errorToast("Invalid crededentials");
+        else infoToast("Server problem");
       }
     }
   };

@@ -2,12 +2,14 @@ import { Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { CaretDown } from "phosphor-react";
 import { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import axios from "axios";
+
 import { chatHistory } from "../../store/atoms/messageState";
 import { appState } from "../../store/atoms/appStateAtom";
-import axios from "axios";
-import { toast } from "react-toastify";
+import useToast from "../../hooks/useToast";
 
 const HeaderMenu = () => {
+  const { warningToast, successToast, infoToast } = useToast();
   const setChatHistory = useSetRecoilState(chatHistory);
   const appSetting = useRecoilValue(appState);
 
@@ -33,26 +35,14 @@ const HeaderMenu = () => {
           }
         );
         if (response.status === 200) {
-          toast.success(response.data.message, {
-            position: "top-center",
-            pauseOnHover: false,
-            pauseOnFocusLoss: false,
-          });
+          successToast(response.data.message);
           setChatHistory([]);
         }
       } catch (error: any) {
-        toast.success("Failed to delete chat", {
-          position: "top-center",
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-        });
+        infoToast("Failed to delete chat");
       }
     } else if (input) {
-      toast.warning("You entered: " + input, {
-        position: "top-center",
-        pauseOnHover: false,
-        pauseOnFocusLoss: false,
-      });
+      warningToast("You entered: " + input);
     }
   };
 

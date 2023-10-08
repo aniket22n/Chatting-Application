@@ -1,14 +1,15 @@
 import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useRecoilValue } from "recoil";
 
 import { userState } from "../../store/atoms/userAtom";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import useToast from "../../hooks/useToast";
 
 const UserProfile = () => {
+  const { successToast } = useToast();
   const redirect = useNavigate();
   const theme = useTheme();
   const user = useRecoilValue(userState);
@@ -28,11 +29,7 @@ const UserProfile = () => {
     });
 
     if (response.status === 200) {
-      toast.success(response.data.message, {
-        pauseOnFocusLoss: false,
-        pauseOnHover: false,
-        position: "top-center",
-      });
+      successToast(response.data.message);
       redirect("/login");
     }
   };
