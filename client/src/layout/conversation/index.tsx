@@ -1,9 +1,9 @@
 import { Stack, Box, Typography } from "@mui/material";
 import { useRecoilValue } from "recoil";
 
-import Header from "./Header";
-import Footer from "./Footer";
-import Messages from "./Messages";
+import Header from "../../components/conversation/Header";
+import Footer from "../../components/conversation/Footer";
+import Messages from "../../components/conversation/Messages";
 import { appState } from "../../store/atoms/appStateAtom";
 
 const Chat = () => {

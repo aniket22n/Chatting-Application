@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import { useRecoilState } from "recoil";
 import { Moon, Sun } from "phosphor-react";
 
-import { themeState, Theme } from "../../store/atoms/themeAtom";
+import { themeState, Theme } from "../../../store/atoms/themeAtom";
 
 const ToggleTheme = () => {
   const mainTheme = useTheme();

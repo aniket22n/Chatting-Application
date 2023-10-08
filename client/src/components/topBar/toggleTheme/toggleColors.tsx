@@ -1,7 +1,8 @@
 import { IconButton, Stack } from "@mui/material";
 import { CheckCircle, Circle } from "phosphor-react";
 import { useRecoilState } from "recoil";
-import { themeState, Color } from "../../store/atoms/themeAtom";
+
+import { themeState, Color } from "../../../store/atoms/themeAtom";
 
 const ToggleColors = () => {
   const [theme, setTheme] = useRecoilState(themeState);

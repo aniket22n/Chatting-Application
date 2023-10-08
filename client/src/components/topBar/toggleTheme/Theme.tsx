@@ -5,8 +5,8 @@ import { PaintBrushHousehold } from "phosphor-react";
 import { IconButton, Stack, Typography } from "@mui/material";
 
 import ToggleTheme from "./toggleTheme";
-import { StyledMenu } from "./customMenu";
 import ToggleColors from "./toggleColors";
+import { StyledMenu } from "./customMenu";
 
 export default function Theme() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

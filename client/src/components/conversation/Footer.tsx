@@ -10,7 +10,7 @@ import { Smiley, TelegramLogo } from "phosphor-react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useState } from "react";
 
-import { socket } from "../socket";
+import { socket } from "../../socket";
 import { userState } from "../../store/atoms/userAtom";
 import { appState } from "../../store/atoms/appStateAtom";
 import { chatHistory } from "../../store/atoms/messageState";

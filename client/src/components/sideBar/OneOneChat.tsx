@@ -15,14 +15,14 @@ import axios from "axios";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Types } from "mongoose";
 
-import { StyledBadge } from "../../components/StyledBadge";
+import { StyledBadge } from "../StyledBadge";
 import SearchComponent from "./SearchComponent";
 import { friends } from "../../store/selectors/friends";
 import { friendsType } from "../../Types/zod";
 import { appState } from "../../store/atoms/appStateAtom";
 import { userState } from "../../store/atoms/userAtom";
 import { chatHistory } from "../../store/atoms/messageState";
-import { socket } from "../socket";
+import { socket } from "../../socket";
 
 const OneOneChat = () => {
   const chatList = useRecoilValue(friends);

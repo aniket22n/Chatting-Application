@@ -2,7 +2,7 @@ import { Stack, Box, Avatar, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useRecoilValue } from "recoil";
 
-import { StyledBadge } from "../../components/StyledBadge";
+import { StyledBadge } from "../StyledBadge";
 import { appState } from "../../store/atoms/appStateAtom";
 import HeaderMenu from "./HeaderMenu";
 

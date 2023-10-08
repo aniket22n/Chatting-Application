@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { Avatar, Card, IconButton, Stack, Typography } from "@mui/material";
 
 import { searchState } from "../../store/atoms/searchAtom";
-import SearchBar from "../../components/sideBar/SearchBar";
+import SearchBar from "./SearchBar";
 import { loginResponseType, searchType } from "../../Types/zod";
 import { friends } from "../../store/selectors/friends";
 import { userState } from "../../store/atoms/userAtom";
