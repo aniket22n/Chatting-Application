@@ -75,6 +75,7 @@ io.on("connection", async (socket) => {
       const chat = await Chat.findByIdAndUpdate(chat_id, {
         $push: { messages: newMessage },
         $inc: { unread: 1 },
+        $set: { delivery: "delivered" },
       });
 
       if (sender != receiver) {
@@ -100,9 +101,23 @@ io.on("connection", async (socket) => {
     socket.on("read", async (chat_id) => {
       const updatedChat = await Chat.findByIdAndUpdate(
         chat_id,
-        { $set: { unread: 0 } },
+        { $set: { unread: 0, delivery: "read" } },
         { new: true }
       );
+      // ********* notify sender that receiver read message ****************
+      if (updatedChat && updatedChat.messages.length > 0) {
+        const sender_id =
+          updatedChat.messages[updatedChat.messages.length - 1].sender;
+        const sender = await User.findById(sender_id).select("socket_id");
+        if (sender) {
+          if (connectedSockets.includes(sender.socket_id)) {
+            io.to(sender.socket_id).emit(
+              "delivery",
+              updatedChat.messages[updatedChat.messages.length - 1].receiver
+            );
+          }
+        }
+      }
     });
 
     socket.on("disconnect", async () => {

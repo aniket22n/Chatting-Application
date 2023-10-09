@@ -126,11 +126,15 @@ async function getResponse(
             let msg = "say hello...";
             let time = 0;
             let unread = 0;
+            let delivery = chat.delivery;
             if (chat.messages.length !== 0) {
               const lastMessage = chat.messages[chat.messages.length - 1];
               msg = lastMessage.content;
               time = lastMessage.timestamp;
-              if (!lastMessage.sender.equals(isUser._id)) unread = chat.unread;
+              if (!lastMessage.sender.equals(isUser._id)) {
+                unread = chat.unread;
+                delivery = "none";
+              }
             }
             return {
               username: friend.username,
@@ -138,6 +142,7 @@ async function getResponse(
               online: friend.online,
               id: friend._id,
               chat_id: id.chat_id,
+              delivery: delivery,
               msg: msg,
               unread: unread,
               time: time,

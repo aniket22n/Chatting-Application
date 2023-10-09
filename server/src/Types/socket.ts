@@ -9,6 +9,7 @@ export interface ServerToClientEvents {
     message: string,
     chat_id: mongoose.Types.ObjectId
   ) => void;
+  delivery: (receiver: mongoose.Types.ObjectId) => void;
 }
 
 export interface ClientToServerEvents {

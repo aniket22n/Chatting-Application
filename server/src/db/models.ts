@@ -30,7 +30,16 @@ const chatSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  // to notify receiver, there is a new message
   unread: { type: Number, default: 0, required: true },
+
+  // to notify sender, their message is seen or not
+  delivery: {
+    type: String,
+    enum: ["delivered", "read", "none"],
+    default: "none",
+    required: true,
+  },
   messages: [
     {
       content: { type: String, required: true },

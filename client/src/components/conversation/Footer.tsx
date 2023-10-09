@@ -43,9 +43,15 @@ const Footer = () => {
         };
 
         setMessages([...messages, newMessage]);
+
         const updatedFriends = user.info.friends.map((friend) => {
           if (friend.chat_id === appSettings.selectedChat?.chat_id) {
-            return { ...friend, time: time, msg: input };
+            return {
+              ...friend,
+              time: time,
+              msg: input,
+              delivery: "delivered" as "delivered",
+            };
           }
           return friend;
         });

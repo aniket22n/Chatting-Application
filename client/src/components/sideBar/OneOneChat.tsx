@@ -23,6 +23,7 @@ import { appState } from "../../store/atoms/appStateAtom";
 import { userState } from "../../store/atoms/userAtom";
 import { chatHistory } from "../../store/atoms/messageState";
 import { socket } from "../../socket";
+import { Check, Checks, Hand } from "phosphor-react";
 
 const OneOneChat = () => {
   const chatList = useRecoilValue(friends);
@@ -40,6 +41,7 @@ const OneOneChat = () => {
     chat_id: Types.ObjectId;
     msg: string;
     time: number;
+    delivery: "delivered" | "read" | "none";
   }) => {
     // request message history
     const response = await axios.get("http://localhost:3000/chatHistory", {
@@ -50,7 +52,7 @@ const OneOneChat = () => {
       setChatHistory(response.data.response);
     }
 
-    // set unread messages to 0
+    // set unread messages to 0 & make message as seen or read
     if (Input.unread > 0) {
       socket.emit("read", Input.chat_id);
 
@@ -130,6 +132,19 @@ const OneOneChat = () => {
                     </Button>
                   );
                 })}
+              {chatList.length === 0 && (
+                <Stack alignItems={"center"}>
+                  <Stack direction={"row"} alignItems={"center"} spacing={1}>
+                    <Typography>Hey there </Typography>
+                    <Hand size={32} />
+                  </Stack>
+                  <Typography sx={{ textAlign: "center" }}>
+                    I'm Aniket, and I built this chat application. Feel free to
+                    start a conversation with me by searching for "aniket" or
+                    explore other users.
+                  </Typography>
+                </Stack>
+              )}
             </Stack>
           </SimpleBar>
         </Stack>
@@ -183,16 +198,25 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
             >
               {Input.username}
             </Typography>
-            <Typography
-              sx={{
-                textTransform: "none",
-                color: theme.palette.text.secondary,
-                fontSize: "14px",
-              }}
-            >
-              {Input.msg.substring(0, 12) +
-                (Input.msg.length > 12 ? "..." : "")}
-            </Typography>
+
+            <Stack direction={"row"}>
+              {Input.delivery === "delivered" && (
+                <Check color={theme.palette.primary.main} size={24} />
+              )}
+              {Input.delivery === "read" && (
+                <Checks color={theme.palette.primary.main} size={24} />
+              )}
+              <Typography
+                sx={{
+                  textTransform: "none",
+                  color: theme.palette.text.secondary,
+                  fontSize: "14px",
+                }}
+              >
+                {Input.msg.substring(0, 12) +
+                  (Input.msg.length > 12 ? "..." : "")}
+              </Typography>
+            </Stack>
           </Stack>
         </Stack>
         <Stack

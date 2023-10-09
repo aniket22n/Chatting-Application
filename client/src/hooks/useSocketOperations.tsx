@@ -47,6 +47,7 @@ const useSocketOperations = () => {
 
         // add message to message History
         if (isChatSelected) {
+          socket.emit("read", chat_id);
           setMessages((prevMessages) => [
             ...prevMessages,
             {
@@ -57,7 +58,7 @@ const useSocketOperations = () => {
             },
           ]);
         }
-        // message received notification
+        // message received notification to receiver
         if (user.info) {
           const updatedFriends = user.info?.friends.map((friend) => {
             if (friend.id === sender) {
@@ -66,6 +67,26 @@ const useSocketOperations = () => {
                 unread: isChatSelected ? 0 : friend.unread + 1,
                 msg: message,
                 time: time,
+                delivery: "none" as "none",
+              };
+            }
+            return friend;
+          });
+          setUser({
+            ...user,
+            info: { ...user.info, friends: updatedFriends },
+          });
+        }
+      });
+
+      // ********************* message read by receiver *********************
+      socket.on("delivery", (receiver) => {
+        if (user.info) {
+          const updatedFriends = user.info?.friends.map((friend) => {
+            if (receiver === friend.id) {
+              return {
+                ...friend,
+                delivery: "read" as "read",
               };
             }
             return friend;

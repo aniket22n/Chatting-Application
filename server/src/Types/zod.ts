@@ -55,6 +55,7 @@ export const friends = z.object({
   chat_id: z.custom<mongoose.Types.ObjectId>(),
   msg: z.string(),
   time: z.number(),
+  delivery: z.enum(["delivered", "read", "none"]).default("none" as "none"),
 });
 export type friendsType = z.infer<typeof friends>;
 

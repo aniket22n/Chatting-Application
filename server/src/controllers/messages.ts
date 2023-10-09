@@ -43,7 +43,7 @@ router.delete("/deleteChatHistroy", auth, async (req, res) => {
 
   try {
     const chat = await Chat.findByIdAndUpdate(chat_id.data.chat_id, {
-      $set: { messages: [] },
+      $set: { messages: [], unread: 0, delivery: "none" },
     });
     return res.status(200).json({ message: "Success!" });
   } catch (error: any) {

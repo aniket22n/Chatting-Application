@@ -18,6 +18,7 @@ router.put("/addUser", auth, async (req, res) => {
   const newChat = new Chat({
     participants: [connect_to.data.id, req.headers["id"]],
     unread: 1,
+    delivery: "delivered",
     messages: [
       {
         content: "Hello there...",
@@ -60,6 +61,7 @@ router.put("/addUser", auth, async (req, res) => {
       image: friend.image,
       online: friend.online,
       unread: 0,
+      delivery: chat.delivery,
       chat_id: chat._id,
       msg: "Hello there...",
       time: Date.now(),

@@ -1,26 +1,18 @@
-import { Stack, Box, Typography } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import { useRecoilValue } from "recoil";
 
 import Header from "../../components/conversation/Header";
 import Footer from "../../components/conversation/Footer";
 import Messages from "../../components/conversation/Messages";
 import { appState } from "../../store/atoms/appStateAtom";
+import GitHubLink from "../../components/conversation/GitHubLink";
 
 const Chat = () => {
   const { isDrawerOpen, selectedChat } = useRecoilValue(appState);
-
   if (!selectedChat) {
-    return (
-      <center>
-        <Box
-          minWidth="300px"
-          display={window.innerWidth < 500 && isDrawerOpen ? "none" : "block"}
-        >
-          <Typography variant="h2">Select chat</Typography>
-        </Box>
-      </center>
-    );
+    return <GitHubLink />;
   }
+
   return (
     <Box
       sx={{

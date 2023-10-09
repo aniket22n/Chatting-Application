@@ -58,7 +58,12 @@ const Messages = () => {
                       >
                         {el.content}
                       </Box>
-                      <Box sx={{ fontSize: "14px" }}>
+                      <Box
+                        sx={{
+                          fontSize: "14px",
+                          color: theme.palette.grey[500],
+                        }}
+                      >
                         {formatTime(el.timestamp)}
                       </Box>
                     </Stack>
@@ -80,7 +85,12 @@ const Messages = () => {
                       >
                         {el.content}
                       </Box>
-                      <Box sx={{ fontSize: "14px" }}>
+                      <Box
+                        sx={{
+                          fontSize: "14px",
+                          color: theme.palette.grey[500],
+                        }}
+                      >
                         {formatTime(el.timestamp)}
                       </Box>
                     </Stack>
