@@ -24,6 +24,7 @@ import { userState } from "../../store/atoms/userAtom";
 import { chatHistory } from "../../store/atoms/messageState";
 import { socket } from "../../socket";
 import { Check, Checks, Hand } from "phosphor-react";
+import { SiGithub } from "react-icons/si";
 
 const OneOneChat = () => {
   const chatList = useRecoilValue(friends);
@@ -143,6 +144,21 @@ const OneOneChat = () => {
                     start a conversation with me by searching for "aniket" or
                     explore other users.
                   </Typography>
+                  <Stack direction={"row"} alignItems={"center"} spacing={1}>
+                    <Typography>
+                      <a
+                        href="https://github.com/aniket22n/Chatting-Application"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: theme.palette.primary.main }}
+                      >
+                        GitHub repository
+                      </a>
+                    </Typography>
+                    <Typography variant="h5">
+                      <SiGithub />
+                    </Typography>
+                  </Stack>
                 </Stack>
               )}
             </Stack>
@@ -199,24 +215,16 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
               {Input.username}
             </Typography>
 
-            <Stack direction={"row"}>
-              {Input.delivery === "delivered" && (
-                <Check color={theme.palette.primary.main} size={24} />
-              )}
-              {Input.delivery === "read" && (
-                <Checks color={theme.palette.primary.main} size={24} />
-              )}
-              <Typography
-                sx={{
-                  textTransform: "none",
-                  color: theme.palette.text.secondary,
-                  fontSize: "14px",
-                }}
-              >
-                {Input.msg.substring(0, 12) +
-                  (Input.msg.length > 12 ? "..." : "")}
-              </Typography>
-            </Stack>
+            <Typography
+              sx={{
+                textTransform: "none",
+                color: theme.palette.text.secondary,
+                fontSize: "14px",
+              }}
+            >
+              {Input.msg.substring(0, 15) +
+                (Input.msg.length > 15 ? "..." : "")}
+            </Typography>
           </Stack>
         </Stack>
         <Stack
@@ -225,7 +233,26 @@ const ChatElement = ({ Input }: { Input: friendsType }) => {
           display={Input.time ? "box" : "none"}
         >
           <Typography variant="caption">{formatTime(Input.time)}</Typography>
-          <Badge color="primary" badgeContent={Input.unread} />
+          <Box margin={0}>
+            {" "}
+            {Input.delivery === "none" && (
+              <Badge color="primary" badgeContent={Input.unread} />
+            )}
+            {Input.delivery === "delivered" && (
+              <Check
+                style={{ margin: 0, padding: 0 }}
+                color={theme.palette.primary.main}
+                size={20}
+              />
+            )}
+            {Input.delivery === "read" && (
+              <Checks
+                style={{ margin: 0, padding: 0 }}
+                color={theme.palette.primary.main}
+                size={20}
+              />
+            )}
+          </Box>
         </Stack>
       </Stack>
     </Card>

@@ -14,7 +14,7 @@ import useToast from "../../hooks/useToast";
 // Search component
 function SearchComponent() {
   const theme = useTheme();
-  const { successToast, errorToast, infoToast } = useToast();
+  const { errorToast, infoToast } = useToast();
   const [search, setSearch] = useRecoilState(searchState);
 
   const handleSearch = async () => {
@@ -34,7 +34,6 @@ function SearchComponent() {
 
       // ************ Response****************
       if (response.status === 200) {
-        successToast(response.data.message);
         setSearch({ input: "", response: response.data.response });
       }
     } catch (error: any) {

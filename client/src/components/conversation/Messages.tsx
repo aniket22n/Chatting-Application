@@ -51,8 +51,8 @@ const Messages = () => {
                       <Box
                         sx={{
                           p: 1.5,
-                          bgcolor: theme.palette.grey[500],
-                          color: "#000",
+                          bgcolor: theme.palette.background.paper,
+                          color: theme.palette.text.primary,
                           borderRadius: "0px 20px 20px 20px",
                         }}
                       >

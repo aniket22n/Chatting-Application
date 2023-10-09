@@ -7,3 +7,8 @@ export const currentChat = atom({
     chat_id: "",
   },
 });
+
+export const blur = atom({
+  key: "blur",
+  default: false,
+});

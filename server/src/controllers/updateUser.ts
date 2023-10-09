@@ -2,7 +2,11 @@ import express from "express";
 
 import { Chat, User } from "../db/models";
 import { auth } from "../middlewares/authenticate";
-import { addUserSchemaZod, friendsType } from "../Types/zod";
+import {
+  addUserSchemaZod,
+  friendsType,
+  UpdatedProfileShemaZod,
+} from "../Types/zod";
 
 const router = express.Router();
 
@@ -73,6 +77,22 @@ router.put("/addUser", auth, async (req, res) => {
     });
   }
   return res.status(500).json({ message: "Server error" });
+});
+
+// **************** update user Image ************
+router.put("/updateImage", async (req, res) => {
+  const updatedData = UpdatedProfileShemaZod.safeParse(req.body);
+  if (!updatedData.success) {
+    return res.status(400).json({ message: "Invalid data" });
+  }
+  try {
+    const updatedUser = await User.findByIdAndUpdate(updatedData.data.id, {
+      image: updatedData.data.image,
+    });
+    return res.status(200).json({ message: "Profile picture updated " });
+  } catch (error: any) {
+    return res.status(500).json({ message: "Server problem" });
+  }
 });
 
 export default router;

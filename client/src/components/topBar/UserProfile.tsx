@@ -9,16 +9,20 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { userState } from "../../store/atoms/userAtom";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import useToast from "../../hooks/useToast";
-import { SignOut } from "phosphor-react";
+import { SignOut, X } from "phosphor-react";
+import ImageUploadButton from "./ImageUpload";
+import { blur } from "../../store/atoms/otherAtom";
+import "../../style/blur.css";
 
 const UserProfile = () => {
+  const setBlur = useSetRecoilState(blur);
   const { successToast } = useToast();
   const redirect = useNavigate();
   const theme = useTheme();
@@ -37,15 +41,19 @@ const UserProfile = () => {
     const response = await axios.get("http://localhost:3000/logout", {
       withCredentials: true,
     });
-
     if (response.status === 200) {
       successToast(response.data.message);
       redirect("/login");
     }
   };
 
+  useEffect(() => {
+    setBlur((pre) => !pre);
+  }, [open]);
+
   return (
     <>
+      {open && <div className="blur-background"></div>}
       <Box>
         <IconButton
           id="basic-button"
@@ -59,43 +67,82 @@ const UserProfile = () => {
             src={user.info?.image}
           />
         </IconButton>
+
         <Menu
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
-          onClose={handleClose}
           MenuListProps={{
             "aria-labelledby": "basic-button",
           }}
-          onClick={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
         >
-          <MenuItem>
-            <Stack alignItems={"center"} spacing={1}>
-              <Avatar
+          <MenuItem
+            disableRipple
+            sx={{ "&:hover": { bgcolor: "transparent" } }}
+          >
+            <Box>
+              <IconButton
+                onClick={handleClose}
                 sx={{
-                  height: "60px",
-                  width: "60px",
-                  border: `solid ${theme.palette.primary.main} 2px`,
+                  color: theme.palette.text.primary,
+                  position: "absolute",
+                  right: 0,
                 }}
-                src={user.info?.image}
-              />
-              <Typography sx={{ textTransform: "capitalize" }}>
-                {user.info?.username}
-              </Typography>
-              <Typography>{user.info?.email}</Typography>
+              >
+                <X size={18} />
+              </IconButton>
 
-              <Button onClick={handleLogout}>
-                <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                  <Typography
-                    color={theme.palette.error.main}
-                    sx={{ textTransform: "capitalize" }}
+              <Stack
+                alignItems={"center"}
+                spacing={2}
+                sx={{ mt: "20px", p: "10px" }}
+              >
+                {/* ************* user Profile picture ********** */}
+                <Stack direction={"row"} position={"relative"}>
+                  <Avatar
+                    sx={{
+                      height: "80px",
+                      width: "80px",
+                    }}
+                    src={user.info?.image}
+                  />
+
+                  {/************** upload image ****************/}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      bottom: "-15px",
+                      right: "-35px",
+                    }}
                   >
-                    Logout
-                  </Typography>
-                  <SignOut size={24} color={theme.palette.error.main} />
+                    <ImageUploadButton />
+                  </Box>
                 </Stack>
-              </Button>
-            </Stack>
+
+                {/***************** username & email **********/}
+                <Stack spacing={1} alignItems={"center"}>
+                  <Typography sx={{ textTransform: "capitalize" }}>
+                    {`Hi, ${user.info?.username}`}
+                  </Typography>
+                  <Typography>{user.info?.email}</Typography>
+                </Stack>
+
+                {/******************* Logout ****************** */}
+                <Button
+                  onClick={handleLogout}
+                  variant="contained"
+                  sx={{ bgcolor: theme.palette.error.dark }}
+                >
+                  <Stack direction={"row"} alignItems={"center"} spacing={1}>
+                    <Typography sx={{ textTransform: "capitalize" }}>
+                      Logout
+                    </Typography>
+                    <SignOut size={24} />
+                  </Stack>
+                </Button>
+              </Stack>
+            </Box>
           </MenuItem>
         </Menu>
       </Box>

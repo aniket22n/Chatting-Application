@@ -127,3 +127,12 @@ export type searchResponseType = z.infer<typeof searchResponseSchema>;
 export const addUserSchemaZod = z.object({
   id: z.custom<mongoose.Types.ObjectId>(),
 });
+
+// ***************** update user Image ****************
+
+export const UpdatedProfileShemaZod = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
+  image: z.string(),
+});
+
+export type UpdateImage = z.infer<typeof UpdatedProfileShemaZod>;

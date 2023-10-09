@@ -9,6 +9,7 @@ import { useTheme, styled } from "@mui/material/styles";
 import { Smiley, TelegramLogo } from "phosphor-react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useState } from "react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 
 import { socket } from "../../socket";
 import { userState } from "../../store/atoms/userAtom";
@@ -24,6 +25,7 @@ const StyledInput = styled(TextField)(({}) => ({
 
 const Footer = () => {
   const theme = useTheme();
+  const [emojiVisible, setEmojiVisible] = useState(false);
 
   const [input, setInput] = useState("");
   const [messages, setMessages] = useRecoilState(chatHistory);
@@ -93,9 +95,21 @@ const Footer = () => {
             // Attachment Icon feature
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton>
+                <IconButton onClick={() => setEmojiVisible(!emojiVisible)}>
                   <Smiley />
                 </IconButton>
+                <Box
+                  display={emojiVisible ? "block" : "none"}
+                  sx={{ right: "-70px", bottom: "60px" }}
+                  position={"absolute"}
+                >
+                  <EmojiPicker
+                    onEmojiClick={(e) => setInput((pre) => pre + e.emoji)}
+                    theme={
+                      theme.palette.mode === "dark" ? Theme.DARK : Theme.LIGHT
+                    }
+                  />
+                </Box>
               </InputAdornment>
             ),
           }}
@@ -112,7 +126,12 @@ const Footer = () => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <IconButton onClick={handleSendMessage}>
+            <IconButton
+              onClick={() => {
+                setEmojiVisible(false);
+                handleSendMessage();
+              }}
+            >
               <TelegramLogo color="#fff" />
             </IconButton>
           </Stack>

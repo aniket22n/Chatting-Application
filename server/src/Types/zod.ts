@@ -1,5 +1,6 @@
 import { z } from "zod";
 import mongoose from "mongoose";
+import { updateUserSocketInfo } from "../socketUtils";
 
 //****************** register ******************
 
@@ -133,3 +134,12 @@ export const addUserSchemaZod = z.object({
 export const DeleteChat = z.object({
   chat_id: z.custom<mongoose.Types.ObjectId>(),
 });
+
+// ***************** update user Image ****************
+
+export const UpdatedProfileShemaZod = z.object({
+  id: z.custom<mongoose.Types.ObjectId>(),
+  image: z.string(),
+});
+
+export type UpdateImage = z.infer<typeof UpdatedProfileShemaZod>;

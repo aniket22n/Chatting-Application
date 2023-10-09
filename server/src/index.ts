@@ -7,7 +7,7 @@ import cookeParser from "cookie-parser";
 import { dbConnect } from "./db/connection";
 import userRouter from "./controllers/user";
 import searchRouter from "./controllers/search";
-import addFriendRoute from "./controllers/addFriend";
+import addFriendRoute from "./controllers/updateUser";
 import messageRoute from "./controllers/messages";
 import { ClientToServerEvents, ServerToClientEvents } from "./Types/socket";
 import { Chat, User } from "./db/models";
