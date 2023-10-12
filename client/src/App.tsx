@@ -3,7 +3,7 @@ import { useRecoilValue } from "recoil";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { CssBaseline, PaletteOptions } from "@mui/material";
+import { Box, CssBaseline, PaletteOptions, Typography } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./components/auth/Login";
@@ -41,10 +41,24 @@ function App() {
           <Route path="/" element={<Layout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/*" Component={NotFound} />
         </Routes>
       </ThemeProvider>
     </div>
   );
 }
+
+const NotFound = () => {
+  return (
+    <center>
+      <Box>
+        <Typography variant="h4">404 Not Found</Typography>
+        <Typography variant="caption">
+          The page you are looking for does not exist.
+        </Typography>
+      </Box>
+    </center>
+  );
+};
 
 export default App;

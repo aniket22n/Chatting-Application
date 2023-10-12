@@ -135,6 +135,10 @@ io.on("connection", async (socket) => {
   }
 });
 
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Invalid route. Page not found." });
+});
+
 dbConnect()
   .then(() => {
     try {
