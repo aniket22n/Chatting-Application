@@ -11,6 +11,7 @@ import {
 import { Chat, User } from "../db/models";
 import { auth } from "../middlewares/authenticate";
 require("dotenv").config("../../.env");
+import { JWT_SECRET } from "../config";
 
 const router = express.Router();
 
@@ -61,13 +62,9 @@ router.post("/login", async (req, res) => {
   bcrypt.compare(password, isUser.password, async function (err, result) {
     if (result) {
       // set token as cookie
-      const token = jwt.sign(
-        { username, id: isUser._id },
-        process.env.JWT_SECRET!,
-        {
-          expiresIn: "7d",
-        }
-      );
+      const token = jwt.sign({ username, id: isUser._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 7 * 1000, //valid for 7 days (milliseconds)

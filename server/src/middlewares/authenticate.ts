@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-require("dotenv").config("../../.env");
+import { JWT_SECRET } from "../config";
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
   if (req.cookies["token"] == undefined) {
@@ -12,7 +11,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
   const token: string = req.cookies["token"];
 
-  jwt.verify(token, process.env.JWT_SECRET!, (err, decoded) => {
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
       return res
         .status(401)
