@@ -3,6 +3,7 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "../store/atoms/userAtom";
 import { useNavigate } from "react-router";
 import useToast from "./useToast";
+import { api } from "../path";
 
 const useAuthentication = () => {
   const setUserState = useSetRecoilState(userState);
@@ -11,7 +12,7 @@ const useAuthentication = () => {
 
   const isLoggedin = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/isLoggedin", {
+      const response = await axios.get(api.isLoggedinURL, {
         withCredentials: true,
       });
       if (response.status === 200) {

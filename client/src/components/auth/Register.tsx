@@ -14,6 +14,7 @@ import { registerType } from "../../Types/zod";
 import "../../style/auth.css";
 import gooseImage from "../../assets/logo/light-logo.png";
 import useToast from "../../hooks/useToast";
+import { api } from "../../path";
 
 const textFieldStyle = {
   style: {
@@ -100,10 +101,7 @@ export default function Register() {
           friends: [],
         };
         // Make a registration request to the server
-        const response = await axios.post(
-          "http://localhost:3000/register",
-          registerData
-        );
+        const response = await axios.post(api.registerURL, registerData);
         console.log(response);
 
         if (response.status === 200) {

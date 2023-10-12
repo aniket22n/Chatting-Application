@@ -11,6 +11,7 @@ import { loginType } from "../../Types/zod";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../../store/atoms/userAtom";
 import useToast from "../../hooks/useToast";
+import { api } from "../../path";
 
 const textFieldStyle = {
   style: {
@@ -34,13 +35,9 @@ export default function Login() {
     else {
       try {
         const loginData: loginType = { username, password };
-        const response = await axios.post(
-          "http://localhost:3000/login",
-          loginData,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.post(api.loginURL, loginData, {
+          withCredentials: true,
+        });
         if (response.status == 200) {
           successToast(response.data.message);
           setUser({ isLoggedin: true, info: response.data.response });

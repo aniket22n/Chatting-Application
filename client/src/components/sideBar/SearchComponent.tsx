@@ -10,6 +10,7 @@ import { loginResponseType, searchType } from "../../Types/zod";
 import { friends } from "../../store/selectors/friends";
 import { userState } from "../../store/atoms/userAtom";
 import useToast from "../../hooks/useToast";
+import { api } from "../../path";
 
 // Search component
 function SearchComponent() {
@@ -24,13 +25,9 @@ function SearchComponent() {
     try {
       const userData: searchType = { username: search.input.trim() };
       //*********** Request User info ********
-      const response = await axios.post(
-        "http://localhost:3000/search",
-        userData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(api.searchURL, userData, {
+        withCredentials: true,
+      });
 
       // ************ Response****************
       if (response.status === 200) {
@@ -88,13 +85,9 @@ const DisplayUser = () => {
     if (search) {
       try {
         const input = { id: search.response?.id };
-        const response = await axios.put(
-          "http://localhost:3000/addUser",
-          input,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.put(api.addUserURL, input, {
+          withCredentials: true,
+        });
         if (response.status == 200) {
           successToast(`${search.response?.username} added to chat list`);
 

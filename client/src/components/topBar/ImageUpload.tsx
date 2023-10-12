@@ -7,6 +7,7 @@ import axios from "axios";
 import useToast from "../../hooks/useToast";
 import { userState } from "../../store/atoms/userAtom";
 import { UpdateImage } from "../../Types/zod";
+import { api } from "../../path";
 
 const ImageUploadButton = () => {
   const { successToast, errorToast } = useToast();
@@ -33,11 +34,9 @@ const ImageUploadButton = () => {
             id: user.info?.id!,
             image: updatedImage,
           };
-          const response = await axios.put(
-            "http://localhost:3000/updateImage",
-            requestData,
-            { withCredentials: true }
-          );
+          const response = await axios.put(api.updateImageURL, requestData, {
+            withCredentials: true,
+          });
           if (response.status === 200) {
             successToast(response.data.message);
           }

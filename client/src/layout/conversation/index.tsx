@@ -6,8 +6,11 @@ import Footer from "../../components/conversation/Footer";
 import Messages from "../../components/conversation/Messages";
 import { appState } from "../../store/atoms/appStateAtom";
 import GitHubLink from "../../components/conversation/GitHubLink";
+import { loadingState } from "../../store/atoms/otherAtom";
+import Loading from "../../components/loading";
 
 const Chat = () => {
+  const isLoading = useRecoilValue(loadingState);
   const { isDrawerOpen, selectedChat } = useRecoilValue(appState);
   if (!selectedChat) {
     return <GitHubLink />;
@@ -28,7 +31,7 @@ const Chat = () => {
 
         {/* Messages */}
         <Box height={"calc(100vh - 3 * 80px)"}>
-          <Messages />
+          {isLoading && window.innerWidth > 500 ? <Loading /> : <Messages />}
         </Box>
 
         {/* Footer */}

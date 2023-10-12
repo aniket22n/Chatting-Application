@@ -1,4 +1,9 @@
 import { useTheme } from "@mui/material/styles";
+import SimpleBar from "simplebar-react";
+import axios from "axios";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { Types } from "mongoose";
+import { SiGithub } from "react-icons/si";
 import {
   Avatar,
   Badge,
@@ -9,11 +14,7 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-import axios from "axios";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { Types } from "mongoose";
 
 import { StyledBadge } from "../StyledBadge";
 import SearchComponent from "./SearchComponent";
@@ -24,9 +25,13 @@ import { userState } from "../../store/atoms/userAtom";
 import { chatHistory } from "../../store/atoms/messageState";
 import { socket } from "../../socket";
 import { Check, Checks, Hand } from "phosphor-react";
-import { SiGithub } from "react-icons/si";
+import { loadingState } from "../../store/atoms/otherAtom";
+import Loading from "../loading";
+import { useEffect, useState } from "react";
+import { api } from "../../path";
 
 const OneOneChat = () => {
+  const setLoadingState = useSetRecoilState(loadingState);
   const chatList = useRecoilValue(friends);
   const [appSetting, setAppSetting] = useRecoilState(appState);
   const [user, setUser] = useRecoilState(userState);
@@ -44,8 +49,13 @@ const OneOneChat = () => {
     time: number;
     delivery: "delivered" | "read" | "none";
   }) => {
+    setLoadingState(true);
+    setTimeout(() => {
+      setLoadingState(false);
+    }, 400);
+
     // request message history
-    const response = await axios.get("http://localhost:3000/chatHistory", {
+    const response = await axios.get(api.chatHistoryURL, {
       params: { id: Input.chat_id },
       withCredentials: true,
     });
@@ -114,6 +124,9 @@ const OneOneChat = () => {
             }}
           >
             <Stack spacing={1.5} p={1} pr={2}>
+              {/* loading and instructions */}
+              <Instructions friends={chatList.length} />
+
               {/* ChatElement */}
               {chatList &&
                 chatList.map((el: friendsType, index: number) => {
@@ -133,34 +146,6 @@ const OneOneChat = () => {
                     </Button>
                   );
                 })}
-              {chatList.length === 0 && (
-                <Stack alignItems={"center"}>
-                  <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                    <Typography>Hey there </Typography>
-                    <Hand size={32} />
-                  </Stack>
-                  <Typography sx={{ textAlign: "center" }}>
-                    I'm Aniket, and I built this chat application. Feel free to
-                    start a conversation with me by searching for "aniket" or
-                    explore other users.
-                  </Typography>
-                  <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                    <Typography>
-                      <a
-                        href="https://github.com/aniket22n/Chatting-Application"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: theme.palette.primary.main }}
-                      >
-                        GitHub repository
-                      </a>
-                    </Typography>
-                    <Typography variant="h5">
-                      <SiGithub />
-                    </Typography>
-                  </Stack>
-                </Stack>
-              )}
             </Stack>
           </SimpleBar>
         </Stack>
@@ -270,5 +255,56 @@ function formatTime(timestamp: number): string {
 
   return `${formattedHours}:${formattedMinutes} ${ampm}`;
 }
+
+// Loading and Instructions for new users
+const Instructions = ({ friends }: { friends: number }) => {
+  const theme = useTheme();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const Instructions = (
+    <>
+      {friends === 0 && (
+        <Stack alignItems={"center"}>
+          <Stack direction={"row"} alignItems={"center"} spacing={1}>
+            <Typography>Hey there </Typography>
+            <Hand size={32} />
+          </Stack>
+          <Typography sx={{ textAlign: "center" }}>
+            I'm Aniket, and I built this chat application. Feel free to start a
+            conversation with me by searching for "aniket" or explore other
+            users.
+          </Typography>
+          <Stack direction={"row"} alignItems={"center"} spacing={1}>
+            <Typography>
+              <a
+                href="https://github.com/aniket22n/Chatting-Application"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: theme.palette.primary.main }}
+              >
+                GitHub repository
+              </a>
+            </Typography>
+            <Typography variant="h5">
+              <SiGithub />
+            </Typography>
+          </Stack>
+        </Stack>
+      )}
+    </>
+  );
+
+  return loading ? <Loading /> : Instructions;
+};
 
 export default OneOneChat;

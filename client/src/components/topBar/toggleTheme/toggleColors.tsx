@@ -3,9 +3,21 @@ import { CheckCircle, Circle } from "phosphor-react";
 import { useRecoilState } from "recoil";
 
 import { themeState, Color } from "../../../store/atoms/themeAtom";
+import { useEffect } from "react";
 
 const ToggleColors = () => {
   const [theme, setTheme] = useRecoilState(themeState);
+
+  useEffect(() => {
+    const userColor =
+      theme.color === Color.Blue
+        ? "blue"
+        : theme.color === Color.Red
+        ? "red"
+        : "yellow";
+    localStorage.setItem("color", userColor);
+  }, [theme.color]);
+
   return (
     <>
       <Stack direction={"row"} spacing={4}>

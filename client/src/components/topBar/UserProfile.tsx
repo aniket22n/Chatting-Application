@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   IconButton,
-  Menu,
   MenuItem,
   Stack,
   Typography,
@@ -20,6 +19,8 @@ import { SignOut, X } from "phosphor-react";
 import ImageUploadButton from "./ImageUpload";
 import { blur } from "../../store/atoms/otherAtom";
 import "../../style/blur.css";
+import { StyledMenu } from "./toggleTheme/customMenu";
+import { api } from "../../path";
 
 const UserProfile = () => {
   const setBlur = useSetRecoilState(blur);
@@ -38,7 +39,7 @@ const UserProfile = () => {
   };
 
   const handleLogout = async () => {
-    const response = await axios.get("http://localhost:3000/logout", {
+    const response = await axios.get(api.logoutURL, {
       withCredentials: true,
     });
     if (response.status === 200) {
@@ -68,7 +69,7 @@ const UserProfile = () => {
           />
         </IconButton>
 
-        <Menu
+        <StyledMenu
           id="basic-menu"
           anchorEl={anchorEl}
           open={open}
@@ -144,7 +145,7 @@ const UserProfile = () => {
               </Stack>
             </Box>
           </MenuItem>
-        </Menu>
+        </StyledMenu>
       </Box>
     </>
   );

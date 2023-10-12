@@ -53,6 +53,7 @@ export default function Theme() {
               alignItems={"center"}
               justifyContent={"center"}
               width={"200px"}
+              p={1}
             >
               <Typography sx={{ mr: 2 }}>Theme</Typography>
               <ToggleTheme />

@@ -8,6 +8,7 @@ import { chatHistory } from "../../store/atoms/messageState";
 import { appState } from "../../store/atoms/appStateAtom";
 import useToast from "../../hooks/useToast";
 import { userState } from "../../store/atoms/userAtom";
+import { api } from "../../path";
 
 const HeaderMenu = () => {
   const { warningToast, successToast, infoToast } = useToast();
@@ -29,13 +30,10 @@ const HeaderMenu = () => {
     if (input === "DELETE") {
       try {
         const chat_id = { chat_id: appSetting.selectedChat?.chat_id };
-        const response = await axios.delete(
-          "http://localhost:3000/deleteChatHistroy",
-          {
-            params: { chat_id },
-            withCredentials: true,
-          }
-        );
+        const response = await axios.delete(api.deleteChatHistroy, {
+          params: { chat_id },
+          withCredentials: true,
+        });
         if (response.status === 200) {
           successToast(response.data.message);
           setChatHistory([]);

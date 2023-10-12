@@ -4,10 +4,16 @@ import { useRecoilState } from "recoil";
 import { Moon, Sun } from "phosphor-react";
 
 import { themeState, Theme } from "../../../store/atoms/themeAtom";
+import { useEffect } from "react";
 
 const ToggleTheme = () => {
   const mainTheme = useTheme();
   const [theme, setTheme] = useRecoilState(themeState);
+
+  useEffect(() => {
+    const userTheme = theme.theme === Theme.Dark ? "dark" : "light";
+    localStorage.setItem("theme", userTheme);
+  }, [theme.theme]);
 
   return (
     <Box

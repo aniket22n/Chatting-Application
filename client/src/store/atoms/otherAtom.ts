@@ -12,3 +12,8 @@ export const blur = atom({
   key: "blur",
   default: false,
 });
+
+export const loadingState = atom({
+  key: "isLoading",
+  default: false,
+});

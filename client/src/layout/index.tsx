@@ -10,9 +10,12 @@ import SideBar from "./sideBar";
 import Chat from "./conversation/index";
 import { appState } from "../store/atoms/appStateAtom";
 import { Main } from "../components/customDrawer";
+import { loadingState } from "../store/atoms/otherAtom";
+import Loading from "../components/loading";
 
 const Layout = () => {
   const theme = useTheme();
+  const isLoading = useRecoilValue(loadingState);
   const isLoggedin = useAuthentication();
   const appSetting = useRecoilValue(appState);
 
@@ -36,36 +39,40 @@ const Layout = () => {
         {/****************  TopBar *********************/}
         <TopBar />
 
-        <Box sx={{ display: "flex" }}>
-          <CssBaseline />
-          <Drawer
-            sx={{
-              width: 360,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
+        {isLoading && window.innerWidth < 500 ? (
+          <Loading />
+        ) : (
+          <Box sx={{ display: "flex" }}>
+            <CssBaseline />
+            <Drawer
+              sx={{
                 width: 360,
-                height: "calc(100vh - 80px)",
-                marginTop: "80px",
-              },
-            }}
-            variant="persistent"
-            anchor="left"
-            open={appSetting.isDrawerOpen}
-          >
-            {/******************* SideBar ******************/}
-            <SideBar />
-          </Drawer>
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: 360,
+                  height: "calc(100vh - 80px)",
+                  marginTop: "80px",
+                },
+              }}
+              variant="persistent"
+              anchor="left"
+              open={appSetting.isDrawerOpen}
+            >
+              {/******************* SideBar ******************/}
+              <SideBar />
+            </Drawer>
 
-          <Main
-            open={appSetting.isDrawerOpen}
-            sx={{
-              width: appSetting.isDrawerOpen ? "calc(100vw - 360px)" : "100%",
-            }}
-          >
-            {/********** Conversation screen *************/}
-            <Chat />
-          </Main>
-        </Box>
+            <Main
+              open={appSetting.isDrawerOpen}
+              sx={{
+                width: appSetting.isDrawerOpen ? "calc(100vw - 360px)" : "100%",
+              }}
+            >
+              {/********** Conversation screen *************/}
+              <Chat />
+            </Main>
+          </Box>
+        )}
       </Stack>
     </Box>
   );

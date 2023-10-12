@@ -18,5 +18,13 @@ export type ToggleThemeState = {
 
 export const themeState = atom<ToggleThemeState>({
   key: "toggleThemeKey",
-  default: { theme: Theme.Dark, color: Color.Blue },
+  default: {
+    theme: localStorage.getItem("theme") === "light" ? Theme.Light : Theme.Dark,
+    color:
+      localStorage.getItem("color") === "yellow"
+        ? Color.Yellow
+        : localStorage.getItem("color") === "red"
+        ? Color.Red
+        : Color.Blue,
+  },
 });

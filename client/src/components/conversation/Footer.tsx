@@ -1,15 +1,15 @@
-import {
-  Box,
-  Stack,
-  TextField,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { useEffect, useState } from "react";
 import { useTheme, styled } from "@mui/material/styles";
 import { Smiley, TelegramLogo } from "phosphor-react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useState } from "react";
 import EmojiPicker, { Theme } from "emoji-picker-react";
+import {
+  Stack,
+  TextField,
+  InputAdornment,
+  Box,
+  IconButton,
+} from "@mui/material";
 
 import { socket } from "../../socket";
 import { userState } from "../../store/atoms/userAtom";
@@ -27,6 +27,7 @@ const Footer = () => {
   const theme = useTheme();
   const [emojiVisible, setEmojiVisible] = useState(false);
 
+  const [countChar, setCountChar] = useState(0);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useRecoilState(chatHistory);
   const appSettings = useRecoilValue(appState);
@@ -72,6 +73,18 @@ const Footer = () => {
     }
   };
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setCountChar(input.length);
+      if (input.length > 999) {
+        setInput(input.slice(0, 999));
+      }
+    }, 100);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [input]);
+
   return (
     <Box
       sx={{
@@ -95,6 +108,15 @@ const Footer = () => {
             // Attachment Icon feature
             endAdornment: (
               <InputAdornment position="end">
+                <Box
+                  sx={{
+                    fontSize: "12px",
+                    color: countChar > 500 ? "red" : "inherit",
+                  }}
+                >
+                  {countChar} / 999
+                </Box>
+
                 <IconButton onClick={() => setEmojiVisible(!emojiVisible)}>
                   <Smiley />
                 </IconButton>
@@ -104,7 +126,12 @@ const Footer = () => {
                   position={"absolute"}
                 >
                   <EmojiPicker
-                    onEmojiClick={(e) => setInput((pre) => pre + e.emoji)}
+                    onEmojiClick={(e) => {
+                      setInput((prevInput) => prevInput + e.emoji);
+
+                      const emojiLength = e.emoji.length;
+                      setCountChar((prevCount) => prevCount + emojiLength);
+                    }}
                     theme={
                       theme.palette.mode === "dark" ? Theme.DARK : Theme.LIGHT
                     }
@@ -114,7 +141,10 @@ const Footer = () => {
             ),
           }}
           sx={{ boxShadow: "2px 2px 5px rgba(0,0,0,0.15)" }}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            setCountChar(e.target.value.length);
+          }}
         />
 
         <Box
