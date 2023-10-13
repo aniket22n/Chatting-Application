@@ -31,7 +31,7 @@ const Layout = () => {
     <Box
       sx={{
         width: "100vw",
-        height: "100vh",
+        height: "100svh",
         bgcolor: theme.palette.background.default,
       }}
     >
@@ -50,7 +50,7 @@ const Layout = () => {
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {
                   width: 360,
-                  height: "calc(100vh - 80px)",
+                  height: "calc(100svh - 80px)",
                   marginTop: "80px",
                 },
               }}

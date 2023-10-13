@@ -25,7 +25,7 @@ const Messages = () => {
     >
       <SimpleBar
         style={{
-          maxHeight: "calc(100vh - 250px)",
+          maxHeight: "calc(100svh - 250px)",
           maxWidth: "100%",
         }}
       >

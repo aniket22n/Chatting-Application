@@ -7,7 +7,7 @@ const GroupChat = () => {
     <Box
       sx={{
         width: "100%",
-        height: "calc(100vh - 80px)",
+        height: "calc(100svh - 80px)",
         bgcolor: theme.palette.background.paper,
         boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.15)",
       }}

@@ -13,13 +13,14 @@ import { ClientToServerEvents, ServerToClientEvents } from "./Types/socket";
 import { Chat, User } from "./db/models";
 import { getFriendsSocketIds, updateUserSocketInfo } from "./socketUtils";
 import { chatMessageType } from "./Types/zod";
+import { ORIGIN } from "./config";
 
 // ************ instance of express and mounts *******************
 
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
@@ -36,7 +37,7 @@ app.use(messageRoute);
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: ORIGIN,
   },
 });
 

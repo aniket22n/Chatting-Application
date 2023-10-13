@@ -6,7 +6,7 @@ export default function Loading() {
     <Stack
       alignItems={"center"}
       justifyContent={"center"}
-      sx={{ height: "calc(100vh - 250px)" }}
+      sx={{ height: "calc(100svh - 250px)" }}
     >
       <Box>
         <CircularProgress />

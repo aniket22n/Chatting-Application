@@ -17,7 +17,7 @@ const GitHubLink = () => {
         alignItems={"center"}
         justifyContent={"center"}
         spacing={2}
-        sx={{ height: "calc(100vh - 80px)" }}
+        sx={{ height: "calc(100svh - 80px)" }}
       >
         <Avatar
           sx={{ height: "70px", width: "70px" }}

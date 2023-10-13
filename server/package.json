@@ -4,8 +4,7 @@
   "description": "socket.io mounted on the http server",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc && nodemon dist/index.js",
-    "start": "cd ../client && npm run build && rm -rf ../server/public && mkdir -p ../server/public && mv ./dist/* ../server/public && cd ../server && tsc && node index.js"
+    "dev": "tsc && nodemon dist/index.js"
   },
   "author": "aniket",
   "license": "ISC",

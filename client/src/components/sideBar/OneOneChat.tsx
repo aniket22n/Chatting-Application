@@ -52,7 +52,7 @@ const OneOneChat = () => {
     setLoadingState(true);
     setTimeout(() => {
       setLoadingState(false);
-    }, 400);
+    }, 2000);
 
     // request message history
     const response = await axios.get(api.chatHistoryURL, {
@@ -94,7 +94,7 @@ const OneOneChat = () => {
     <Box
       sx={{
         width: "100%",
-        height: "calc(100vh - 80px)",
+        height: "calc(100svh - 80px)",
         bgcolor: theme.palette.background.paper,
         boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.15)",
       }}
@@ -120,7 +120,7 @@ const OneOneChat = () => {
           </Typography>
           <SimpleBar
             style={{
-              maxHeight: "calc(100vh - 255px )",
+              maxHeight: "calc(100svh - 255px )",
             }}
           >
             <Stack spacing={1.5} p={1} pr={2}>
@@ -264,7 +264,7 @@ const Instructions = ({ friends }: { friends: number }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 200);
+    }, 2000);
 
     return () => {
       clearTimeout(timer);

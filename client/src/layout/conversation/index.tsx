@@ -21,7 +21,7 @@ const Chat = () => {
       sx={{
         minWidth: "300px",
         width: "100%",
-        height: "calc(100vh - 80px)",
+        height: "calc(100svh - 80px)",
         display: window.innerWidth < 500 && isDrawerOpen ? "none" : "block",
       }}
     >
@@ -30,7 +30,7 @@ const Chat = () => {
         <Header />
 
         {/* Messages */}
-        <Box height={"calc(100vh - 3 * 80px)"}>
+        <Box height={"calc(100svh - 3 * 80px)"}>
           {isLoading && window.innerWidth > 500 ? <Loading /> : <Messages />}
         </Box>
 
