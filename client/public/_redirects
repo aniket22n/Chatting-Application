@@ -1,0 +1,9 @@
+# Redirection rules for the Netlify server
+
+/home /
+
+/register /register
+/signup  /register
+
+/login  /login
+/signup  /login
