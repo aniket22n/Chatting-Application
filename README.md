@@ -29,3 +29,6 @@
 - Themes (Dark and Light)
 
 ## Video Demonstration
+
+https://github.com/aniket22n/Chatting-Application/assets/69907734/21966416-78bb-4c37-827a-321c44fd73b8
+
