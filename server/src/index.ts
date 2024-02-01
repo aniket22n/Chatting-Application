@@ -144,8 +144,8 @@ app.use((req, res, next) => {
 dbConnect()
   .then(() => {
     try {
-      server.listen(3000, () => {
-        console.log("Socket.io server is running on http://localhost:3000");
+      server.listen(process.env.PORT || 4000, () => {
+        console.log("Socket.io server is running");
       });
     } catch (error) {
       console.log("Can't connect to server");
