@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -11,11 +11,13 @@ import Register from "./components/auth/Register";
 import { themeState } from "./store/atoms/themeAtom";
 import palette from "./theme/palette";
 import Layout from "./layout";
+import useToast from "./hooks/useToast";
 
 // ........................ Theme & Routing .........................
 
 function App() {
   const { theme, color } = useRecoilValue(themeState);
+  const { infoToast, warningToast } = useToast();
 
   const customTheme = React.useMemo(
     () =>
@@ -27,6 +29,11 @@ function App() {
       }),
     [theme]
   );
+
+  useEffect(() => {
+    warningToast("Server restarting.");
+    setTimeout(() => infoToast("Please wait for 60 seconds."), 5000);
+  }, []);
 
   useMemo(() => {
     customTheme.palette.primary.main = color;
