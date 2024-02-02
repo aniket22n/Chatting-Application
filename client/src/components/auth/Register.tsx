@@ -9,12 +9,14 @@ import { useState, useReducer } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
+import { useRecoilValue } from "recoil";
 
 import { registerType } from "../../Types/zod";
 import "../../style/auth.css";
 import gooseImage from "../../assets/logo/light-logo.png";
 import useToast from "../../hooks/useToast";
 import { api } from "../../path";
+import { themeState } from "../../store/atoms/themeAtom";
 
 const textFieldStyle = {
   style: {
@@ -65,6 +67,8 @@ export default function Register() {
   const [show, setShow] = useState({ pass: false, cPass: false });
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const darkTheme = useRecoilValue(themeState);
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +118,10 @@ export default function Register() {
         const code = error.request.status;
         if (code === 400) warningToast("Username is already taken");
         else if (code === 401) errorToast("Invalid crededentials");
-        else infoToast("Server problem");
+        else {
+          infoToast("Server restarting. Please wait for up to 60 seconds.");
+          warningToast("Image size : 50 kb or less");
+        }
       }
     }
   };
@@ -136,7 +143,10 @@ export default function Register() {
             display: "flex",
             direction: "column",
             alignItems: "center",
-            bgcolor: theme.palette.grey[900],
+            bgcolor:
+              darkTheme.theme == "dark"
+                ? theme.palette.grey[900]
+                : theme.palette.background.default,
           }}
         >
           <div className="login-form">
@@ -235,7 +245,7 @@ export default function Register() {
                   color="inherit"
                   component="span"
                 >
-                  Select Image
+                  Select Image ( 0 - 50kb )
                 </Button>
               </label>
             </div>
@@ -249,14 +259,25 @@ export default function Register() {
               Register
             </Button>
 
-            <div className="register-link">
+            <div className="register-link" style={{ textAlign: "center" }}>
               Already a member?{" "}
               <Link style={{ color: "skyblue" }} to={"/Login"}>
                 login here
               </Link>
+              <br />
             </div>
           </div>
         </Card>
+        <div style={{ position: "absolute", right: 20, bottom: 20 }}>
+          Code & Video Demo{" "}
+          <Link
+            style={{ color: "skyblue" }}
+            to={"https://github.com/aniket22n/Chatting-Application"}
+            target="_blank"
+          >
+            GitHub Repo
+          </Link>
+        </div>
       </Grid>
     </Grid>
   );

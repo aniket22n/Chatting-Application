@@ -8,8 +8,9 @@ import { useTheme } from "@mui/material/styles";
 
 import "../../style/auth.css";
 import { loginType } from "../../Types/zod";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../store/atoms/userAtom";
+import { themeState } from "../../store/atoms/themeAtom";
 import useToast from "../../hooks/useToast";
 import { api } from "../../path";
 
@@ -28,12 +29,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const setUser = useSetRecoilState(userState);
+  const darkTheme = useRecoilValue(themeState);
 
   const handleLogin = async () => {
     if (username.length < 1) errorToast("Enter username");
     else if (password.length < 1) errorToast("Enter password");
     else {
       try {
+        setUsername(username.trim());
+        setPassword(password.trim());
         const loginData: loginType = { username, password };
         const response = await axios.post(api.loginURL, loginData, {
           withCredentials: true,
@@ -47,7 +51,7 @@ export default function Login() {
         const code = error.request.status;
         if (code == 401) errorToast("Incorrect username or password");
         else if (code == 404) errorToast("Username not found in our records");
-        else infoToast("Server problem");
+        else infoToast("Server restarting. Please wait for up to 60 seconds.");
       }
     }
   };
@@ -64,7 +68,12 @@ export default function Login() {
         <Card
           className="login-card"
           elevation={6}
-          sx={{ bgcolor: theme.palette.grey[900] }}
+          sx={{
+            bgcolor:
+              darkTheme.theme == "dark"
+                ? theme.palette.grey[900]
+                : theme.palette.background.default,
+          }}
         >
           <img className="image-login" src={"welcome.gif"} />
 
@@ -103,7 +112,7 @@ export default function Login() {
             >
               Login
             </Button>
-            <Box className="register-link">
+            <Box className="register-link" style={{ textAlign: "center" }}>
               Not a member yet?{" "}
               <Link style={{ color: "skyblue" }} to={"/register"}>
                 register here
@@ -111,6 +120,16 @@ export default function Login() {
             </Box>
           </Box>
         </Card>
+        <div style={{ position: "absolute", right: 20, bottom: 20 }}>
+          Code & Video Demo{" "}
+          <Link
+            style={{ color: "skyblue" }}
+            to={"https://github.com/aniket22n/Chatting-Application"}
+            target="_blank"
+          >
+            GitHub Repo
+          </Link>
+        </div>
       </Grid>
     </Grid>
   );
