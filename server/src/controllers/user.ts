@@ -70,9 +70,9 @@ router.post("/login", async (req, res) => {
       );
       res.cookie("token", token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7 * 1000, //valid for 7 days (milliseconds)
-        sameSite: "lax",
-        secure: false,
+        maxAge: 60 * 60 * 24 * 7 * 1000, // valid for 7 days (milliseconds)
+        sameSite: "none", // set sameSite to "none"
+        secure: true, // set secure to true for HTTPS connections
       });
 
       const response = await getResponse(isUser.username);
