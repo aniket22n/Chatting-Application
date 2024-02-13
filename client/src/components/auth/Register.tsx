@@ -268,7 +268,14 @@ export default function Register() {
             </div>
           </div>
         </Card>
-        <div style={{ position: "absolute", right: 20, bottom: 20 }}>
+        <div
+          style={{
+            position: "relative",
+            textAlign: "center",
+            marginTop: "10px",
+            marginBottom: "10px",
+          }}
+        >
           Code & Video Demo{" "}
           <Link
             style={{ color: "skyblue" }}
